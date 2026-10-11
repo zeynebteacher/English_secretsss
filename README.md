@@ -77,6 +77,11 @@ input {
     <p id="question">Başlamaq üçün adını daxil et.</p>
     <div id="answers"></div>
     <p id="result"></p>
+    <button type="button" onclick="startTest()" style="cursor:pointer; background:#8b6f9e; color:white; padding:12px 20px; border:0; border-radius:8px;">
+Sınağa başla
+    </button>
+Sınağa başla
+</button>
     <button onclick="nextQuestion()">Növbəti sual</button>
   </div>
 </main>
