@@ -147,7 +147,7 @@
       let html = "";
 
       questions[current].options.forEach(function(option, index) {
-        html += '<button type="button" onclick="checkAnswer(' +
+        html += '<button type="button" onclick="checkAnswerhtml += '<button type="button" onclick="checkAnswer(' + index + ')">' + option + '</button>
           index + ')">' + option + '</button>';
       });
 
