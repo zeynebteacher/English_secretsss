@@ -58,6 +58,8 @@ input {
 <main>
   <div class="card">
   <h2>English Secret</h2>
+    <p>İngilis dili sınağına xoş gəlmisən!</p>
+<button onclick="startTest()">Sınağa başla</button>
   <p>İngilis dili sınağına xoş gəlmisən!</p>
   <button onclick="startTest()">Sınağa başla</button>
 </div>
