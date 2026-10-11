@@ -147,10 +147,10 @@
       let html = "";
 
       questions[current].options.forEach(function(option, index) {
-        html += '<button type="button" onclick="checkAnswerhtml += '<button type="button" onclick="checkAnswer(' + index + ')">' + option + '</button>
-          index + ')">' + option + '</button>';
-      });
-
+        
+questions[current].options.forEach(function(option, index) {
+  html += '<button type="button" onclick="checkAnswer(' + index + ')">' + option + '</button>';
+});
       document.getElementById("answers").innerHTML = html;
     }
 
