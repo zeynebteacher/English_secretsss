@@ -109,6 +109,7 @@ let selected = false;
 
 function startTest() {
   const name = document.getElementById("studentName").value.trim();
+  document.getElementById("testBox").style.display = "block";
 
   if (!name) {
     alert("Zəhmət olmasa adını daxil et.");
