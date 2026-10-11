@@ -107,7 +107,9 @@ let current = 0;
 let score = 0;
 let selected = false;
 
-function startTest() {
+function startTest() document.getElementById("welcome").textContent =
+    "Uğurlar, " + name + "!"; 
+  document.getElementById("testBox").style.display = "block";
   const name = document.getElementById("studentName").value.trim();
 
   if (!name) {
