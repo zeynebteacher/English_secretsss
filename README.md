@@ -78,6 +78,9 @@ input {
     <button onclick="nextQuestion()">Növbəti sual</button>
   </div>
 </main>
+function startTest() {
+  document.getElementById("testBox").style.display = "block";
+}
 
 <script>
 const questions = [
