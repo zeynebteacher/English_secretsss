@@ -56,7 +56,7 @@ input {
 </header>
 
 <main>
-  <div class="card">
+  <div class="card" id="testBox" style="display:none;">
     <h2>Şagird girişi</h2>
     <p>Adını daxil et və sınağa başla.</p>
     <input id="studentName" type="text" placeholder="Ad və soyad">
