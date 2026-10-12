@@ -68,6 +68,9 @@ input {
 <div class="card">
   <h2>Müəllim girişi</h2>
   <p>Materialları və testləri idarə et.</p>
+  
+<input id="teacherEmail" type="email" placeholder="Müəllim e-poçtu">
+
   <input id="teacherPassword" type="password" placeholder="Müəllim şifrəsi">
   <button onclick="teacherLogin()">Daxil ol</button>
   <p id="teacherMessage"></p>
@@ -159,6 +162,33 @@ function nextQuestion() {
   current++;
   showQuestion();
 }
+  
+const supabaseClient = window.supabase.createClient(
+  "https://ngnonuzopyeymgjoypkh.supabase.co",
+  "BURAYA_PUBLISHABLE_KEY_YAZ"
+);
+
+async function teacherLogin() {
+  const email = document.getElementById("teacherEmail").value.trim();
+  const password = document.getElementById("teacherPassword").value;
+  const message = document.getElementById("teacherMessage");
+
+  message.textContent = "Giriş yoxlanılır...";
+
+  const { data, error } = await supabaseClient.auth.signInWithPassword({
+    email: email,
+    password: password
+  });
+
+  if (error) {
+    message.textContent = "Giriş alınmadı. E-poçtu və şifrəni yoxla.";
+    return;
+  }
+
+  document.getElementById("teacherPanel").style.display = "block";
+  message.textContent = "Müəllim girişi uğurludur!";
+}
+
   
 </script>
 
