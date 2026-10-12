@@ -61,6 +61,20 @@ input {
 <input id="studentName" placeholder="Ad və soyad">
 <button onclick="startTest()">Sınağa başla</button>
 </div>
+  
+<div class="card">
+  <h2>Müəllim girişi</h2>
+  <p>Materialları və testləri idarə et.</p>
+  <input id="teacherPassword" type="password" placeholder="Müəllim şifrəsi">
+  <button onclick="teacherLogin()">Daxil ol</button>
+  <p id="teacherMessage"></p>
+</div>
+
+<div class="card" id="teacherPanel" style="display:none;">
+  <h2>Müəllim paneli</h2>
+  <p>English Secret idarəetmə bölməsinə xoş gəlmisən!</p>
+</div>
+
 
 <div class="card" id="testBox" style="display:none;">
 <h2>İngilis dili sınağı</h2>
@@ -142,6 +156,7 @@ function nextQuestion() {
   current++;
   showQuestion();
 }
+  
 </script>
 
 </body>
