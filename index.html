@@ -111,6 +111,8 @@ function startTest() {
   }
   document.getElementById("welcome");
   document.getElementById("testBox").style.display = "block";
+  document.getElementById("question").textContent =
+  "Xoş gəlmisən, " + name + "!";
   current = 0;
   score = 0;
   showQuestion();
@@ -119,6 +121,7 @@ function startTest() {
 function showQuestion() {
   selected = false;
   document.getElementById("result").textContent = "";
+  document.getElementById("studentName").disabled = true;
   if (current >= questions.length) {
     document.getElementById("question").textContent = "Sınaq tamamlandı!";
     document.getElementById("answers").innerHTML = "";
