@@ -7,57 +7,123 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>English Secret</title>
-<style>
+<title>English Secret
+</style>
+
 body {
   font-family: Arial, sans-serif;
-  background: #f7f1e8;
-  color: #39312d;
+  background: #f4ede3;
+  color: #49372c;
   margin: 0;
   padding: 20px;
+  line-height: 1.6;
 }
+
 header {
   text-align: center;
-  background: #d9c3a5;
-  padding: 25px;
-  border-radius: 16px;
+  background: #e5d2bb;
+  color: #49372c;
+  padding: 30px 20px;
+  border-radius: 18px;
+  margin-bottom: 24px;
+  box-shadow: 0 4px 12px rgba(73, 55, 44, 0.10);
 }
+
+h1 {
+  font-size: 36px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  margin: 0 0 10px;
+}
+
+h2 {
+  color: #73523d;
+  margin-top: 0;
+}
+
 .card {
-  background: white;
-  padding: 20px;
-  margin: 15px 0;
-  border-radius: 14px;
-  box-shadow: 0 2px 8px #00000012;
+  background: #fffaf4;
+  color: #49372c;
+  padding: 24px;
+  margin: 18px 0;
+  border-radius: 18px;
+  border: 1px solid #eadbc9;
+  box-shadow: 0 5px 16px rgba(73, 55, 44, 0.08);
 }
+
 button {
-  background: #80634d;
-  color: white;
-  border: none;
-  padding: 12px 18px;
-  border-radius: 8px;
+  background: #73523d;
+  color: #fffaf4;
+  border: 1px solid #73523d;
+  padding: 13px 20px;
+  border-radius: 12px;
   cursor: pointer;
+  font-size: 15px;
+  font-weight: bold;
+  transition: background 0.2s ease;
 }
+
+button:hover {
+  background: #5b3f2e;
+  border-color: #5b3f2e;
+}
+
 input {
-  padding: 10px;
+  box-sizing: border-box;
+  padding: 12px 14px;
   width: 90%;
-  margin: 6px 0;
+  margin: 8px 0;
+  background: #fffdf9;
+  color: #49372c;
+  border: 1px solid #d9c3a5;
+  border-radius: 10px;
+  font-size: 16px;
+  outline: none;
+}
+
+input:focus {
+  border-color: #73523d;
+  box-shadow: 0 0 0 3px rgba(115, 82, 61, 0.12);
 }
 
 .option {
   display: block;
   width: 100%;
+  box-sizing: border-box;
   margin: 10px 0;
-  padding: 12px;
+  padding: 14px 16px;
   background: #f5eee4;
   color: #49372c;
   border: 1px solid #d9c3a5;
-  border-radius: 10px;
+  border-radius: 12px;
   text-align: left;
   font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
 }
 
-}
-</style>
+@media (max-width: 600px) {
+  body {
+    padding: 12px;
+  }
+
+  header {
+    padding: 24px 14px;
+  }
+
+  h1 {
+    font-size: 28px;
+  }
+
+  .card {
+    padding: 18px;
+  }
+
+  input {
+    width: 100%;
+  }
+
+</style> 
 </head>
 <body>
 
