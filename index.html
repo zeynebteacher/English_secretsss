@@ -437,7 +437,8 @@
 
       const { data, error } = await supabaseClient.rpc(
         "student_login",
-        { p_student_code: code }
+        { p_code: code }
+        
       );
 
       if (error) {
