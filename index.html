@@ -199,52 +199,126 @@ function startTest() {
 
 function showQuestion() {
   selected = false;
+
   document.getElementById("result").textContent = "";
   document.getElementById("studentName").disabled = true;
+
   if (current >= questions.length) {
-    document.getElementById("question").textContent = "Sınaq tamamlandı!";
+    document.getElementById("question").textContent =
+      "Sınaq tamamlandı! 🎉";
+
     document.getElementById("answers").innerHTML = "";
+
     document.getElementById("result").textContent =
       "Nəticən: " + score + " / " + questions.length;
+
     return;
   }
 
   const q = questions[current];
+
   document.getElementById("question").textContent =
     (current + 1) + ". " + q.q;
 
   let html = "";
-  q.options.forEach(function(option, index) {
-    html += '<button class="option" onclick="checkAnswer(' + index + ')">' +
-      option + '</button>';
-  });
+
+  if (q.type === "open") {
+    html =
+      '<input id="openAnswer" type="text" ' +
+      'placeholder="Cavabını buraya yaz" ' +
+      'style="width:90%;padding:12px;margin:10px 0;">' +
+      '<button onclick="checkOpenAnswer()">Cavabı yoxla</button>';
+  } else {
+    q.options.forEach(function(option, index) {
+      html +=
+        '<button class="option" onclick="checkAnswer(' + index + ')">' +
+        option +
+        '</button>';
+    });
+  }
+
   document.getElementById("answers").innerHTML = html;
 }
 
 function checkAnswer(index) {
   if (selected) return;
+
   selected = true;
 
-  if (index === questions[current].answer) {
+  const q = questions[current];
+
+  if (index === q.answer) {
     score++;
-    document.getElementById("result").textContent = "Düzgün cavab! 🎉";
+
+    document.getElementById("result").textContent =
+      "Düzgün cavab! 🎉";
   } else {
     document.getElementById("result").textContent =
-      "Səhv cavab. Düzgün cavab: " +
-      questions[current].options[questions[current].answer];
+      "Səhv cavab. Düzgün cavab: " + q.options[q.answer];
+  }
+}
+
+function checkOpenAnswer() {
+  if (selected) return;
+
+  const q = questions[current];
+  const input = document.getElementById("openAnswer");
+
+  const userAnswer = input.value
+    .trim()
+    .toLowerCase()
+    .replace(/[.!?]/g, "")
+    .replace(/\s+/g, " ");
+
+  if (!userAnswer) {
+    document.getElementById("result").textContent =
+      "Zəhmət olmasa, cavabını yaz.";
+    return;
+  }
+
+  selected = true;
+
+  const acceptedAnswers = Array.isArray(q.answer)
+    ? q.answer
+    : [q.answer];
+
+  const correct = acceptedAnswers.some(function(answer) {
+    return userAnswer === String(answer)
+      .trim()
+      .toLowerCase()
+      .replace(/[.!?]/g, "")
+      .replace(/\s+/g, " ");
+  });
+
+  if (correct) {
+    score++;
+
+    document.getElementById("result").textContent =
+      "Düzgün cavab! 🎉";
+  } else {
+    document.getElementById("result").textContent =
+      "Cavab qəbul edilmədi. Nümunə cavab: " +
+      acceptedAnswers[0];
   }
 }
 
 function nextQuestion() {
   if (current >= questions.length) return;
+
   if (!selected) {
-    alert("Əvvəlcə cavab variantını seç.");
+    alert(
+      questions[current].type === "open"
+        ? "Əvvəlcə açıq sualın cavabını yaz və yoxla."
+        : "Əvvəlcə cavab variantını seç."
+    );
     return;
   }
+
   current++;
   showQuestion();
 }
-  
+
+
 const supabaseClient = window.supabase.createClient(
   "https://ngnonuzopyeymgjoypkh.supabase.co",
   "sb_publishable_KAsjgKdKnFOHrims8ZbnkQ__4nZ1M2S"
@@ -264,11 +338,46 @@ async function teacherLogin() {
 
   if (error) {
     message.textContent = "Giriş alınmadı. E-poçtu və şifrəni yoxla.";
-    return;
-  }
+    
+<div class="card" id="teacherPanel" style="display:none;">
+  <h2>🤎 Müəllim paneli</h2>
+  <p>English Secret idarəetmə bölməsinə xoş gəlmisən!</p>
 
-  document.getElementById("teacherPanel").style.display = "block";
-  message.textContent = "Müəllim girişi uğurludur!";
+  <h3>Material əlavə et</h3>
+
+  <label for="materialTitle">Materialın adı</label>
+  <input id="materialTitle" type="text"
+         placeholder="Məsələn: Present Simple">
+
+  <label for="materialClass">Sinif</label>
+  <select id="materialClass">
+    <option value="">Sinif seç</option>
+    <option>2-ci sinif</option>
+    <option>3-cü sinif</option>
+    <option>4-cü sinif</option>
+    <option>5-ci sinif</option>
+    <option>6-cı sinif</option>
+    <option>7-ci sinif</option>
+    <option>8-ci sinif</option>
+    <option>9-cu sinif</option>
+    <option>10-cu sinif</option>
+    <option>11-ci sinif</option>
+  </select>
+
+  <label for="materialTopic">Mövzu</label>
+  <input id="materialTopic" type="text"
+         placeholder="Məsələn: Grammar">
+
+  <label for="materialFile">Fayl seç</label>
+  <input id="materialFile" type="file"
+         accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
+
+  <button onclick="addMaterial()">Material əlavə et</button>
+
+  <p id="materialMessage"></p>
+  <div id="materialList"></div>
+</div>
+
 }
 
   async function resetPassword() {
