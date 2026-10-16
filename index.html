@@ -169,13 +169,246 @@ input:focus {
 </div>
 
 <script>
+
 const questions = [
-{q:"Choose the correct answer: She ___ to school every day.", options:["go","goes","going","gone"], answer:1},
-{q:"What is the plural of child?", options:["childs","childes","children","childrens"], answer:2},
-{q:"Choose the synonym of happy.", options:["sad","glad","angry","tired"], answer:1},
-{q:"They ___ watching TV now.", options:["is","am","are","be"], answer:2},
-{q:"What is the opposite of difficult?", options:["easy","hard","strong","late"], answer:0}
+  {
+    q: "Choose the correct sentence.",
+    options: [
+      "My friends is at school.",
+      "My friends are at school.",
+      "My friends am at school.",
+      "My friends be at school."
+    ],
+    answer: 1
+  },
+  {
+    q: "___ your mother at home yesterday?",
+    options: ["Is", "Were", "Was", "Are"],
+    answer: 2
+  },
+  {
+    q: "They ___ be happy with the result tomorrow.",
+    options: ["are", "were", "will", "will be"],
+    answer: 3
+  },
+  {
+    q: "Choose the negative form: He was ill.",
+    options: [
+      "He not was ill.",
+      "He wasn't ill.",
+      "He doesn't was ill.",
+      "He isn't ill yesterday."
+    ],
+    answer: 1
+  },
+  {
+    q: "Choose the correct question.",
+    options: [
+      "Will be she ready?",
+      "Will she be ready?",
+      "Does she will be ready?",
+      "Is she will ready?"
+    ],
+    answer: 1
+  },
+  {
+    q: "Which sentence is correct?",
+    options: [
+      "I am not busy now.",
+      "I not am busy now.",
+      "I don't be busy now.",
+      "I were not busy now."
+    ],
+    answer: 0
+  },
+  {
+    q: "Choose the correct short answer: Were they at the library?",
+    options: [
+      "Yes, they was.",
+      "Yes, they were.",
+      "Yes, they are.",
+      "Yes, they did."
+    ],
+    answer: 1
+  },
+  {
+    q: "Choose the correct negative question.",
+    options: [
+      "Isn't he your brother?",
+      "Doesn't he is your brother?",
+      "Not is he your brother?",
+      "Is he doesn't your brother?"
+    ],
+    answer: 0
+  },
+  {
+    q: "Which is a proper noun?",
+    options: ["city", "teacher", "London", "river"],
+    answer: 2
+  },
+  {
+    q: "Which is a compound noun?",
+    options: ["kindness", "toothbrush", "beauty", "friendship"],
+    answer: 1
+  },
+  {
+    q: "Which is a derived noun?",
+    options: ["book", "sun", "darkness", "chair"],
+    answer: 2
+  },
+  {
+    q: "Which noun is common?",
+    options: ["Azerbaijan", "Nigar", "Caspian Sea", "mountain"],
+    answer: 3
+  },
+  {
+    q: "Choose the correct plural of mouse.",
+    options: ["mouses", "mice", "mices", "mouse"],
+    answer: 1
+  },
+  {
+    q: "Choose the correct sentence.",
+    options: [
+      "The childs are playing.",
+      "The children are playing.",
+      "The childrens are playing.",
+      "The child are playing."
+    ],
+    answer: 1
+  },
+  {
+    q: "Which noun is uncountable?",
+    options: ["coin", "advice", "chair", "apple"],
+    answer: 1
+  },
+  {
+    q: "There isn't ___ information in the report.",
+    options: ["many", "a few", "much", "several"],
+    answer: 2
+  },
+  {
+    q: "Choose the correct possessive form: the bags belonging to the girls",
+    options: [
+      "the girl's bags",
+      "the girls' bags",
+      "the girls's bags",
+      "the girls bags'"
+    ],
+    answer: 1
+  },
+  {
+    q: "This is the ___ office.",
+    options: ["manager", "managers", "manager's", "managers's"],
+    answer: 2
+  },
+  {
+    q: "Choose the correct plural of tooth.",
+    options: ["tooths", "teeth", "toothes", "tooth"],
+    answer: 1
+  },
+  {
+    q: "Choose the correct expression.",
+    options: [
+      "two breads",
+      "two pieces of bread",
+      "two piece of breads",
+      "two breades"
+    ],
+    answer: 1
+  },
+  {
+    q: "Which sentence is correct?",
+    options: [
+      "The news are interesting.",
+      "The news is interesting.",
+      "A news is interesting.",
+      "The news were interesting every day."
+    ],
+    answer: 1
+  },
+  {
+    q: "Choose the correct forms: My parents ___ at home now, but they ___ at work yesterday.",
+    options: [
+      "are / were",
+      "was / are",
+      "is / was",
+      "will be / were"
+    ],
+    answer: 0
+  },
+  {
+    q: "Choose the correct sentence about the future.",
+    options: [
+      "She will is a doctor.",
+      "She will be a doctor.",
+      "She will are a doctor.",
+      "She wills be a doctor."
+    ],
+    answer: 1
+  },
+  {
+    q: "Which sentence uses the possessive case correctly?",
+    options: [
+      "The childrens' toys are new.",
+      "The children's toys are new.",
+      "The childrens toys' are new.",
+      "The childrens's toys are new."
+    ],
+    answer: 1
+  },
+
+  {
+    type: "open",
+    q: "Complete the sentence: I ___ a student now. (to be)",
+    answer: ["am", "am."]
+  },
+  {
+    type: "open",
+    q: "Rewrite in the negative: She was at school yesterday.",
+    answer: [
+      "she was not at school yesterday",
+      "she wasn't at school yesterday",
+      "she was not at school yesterday."
+    ]
+  },
+  {
+    type: "open",
+    q: "Make a question: They will be ready tomorrow.",
+    answer: [
+      "will they be ready tomorrow",
+      "will they be ready tomorrow?"
+    ]
+  },
+  {
+    type: "open",
+    q: "Write the plural forms: one child, one tooth.",
+    answer: [
+      "children; teeth",
+      "children teeth",
+      "children, teeth",
+      "children and teeth"
+    ]
+  },
+  {
+    type: "open",
+    q: "Translate into English: Mənim bacım sabah evdə olmayacaq.",
+    answer: [
+      "my sister will not be at home tomorrow",
+      "my sister won't be at home tomorrow",
+      "my sister will not be home tomorrow",
+      "my sister won't be home tomorrow"
+    ]
+  },
+  {
+    type: "open",
+    q: "Correct the mistakes: The childrens' toys was expensive.",
+    answer: [
+      "the children's toys were expensive",
+      "the children's toys were expensive."
+    ]
+  }
 ];
+
 
 let current = 0;
 let score = 0;
