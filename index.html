@@ -585,6 +585,8 @@
         );
       });
 
+    
+      
     async function loadMyResults() {
       if (!studentToken) {
         showMessage(
@@ -592,57 +594,6 @@
           "Əvvəlcə şagird kimi daxil ol.",
           true
         );
-        
-async function addMaterial() {
-  
-const { error } = await supabaseClient
-  .from("english_materials")
-  .insert({
-    title: title,
-    content: link,
-    grade: className,
-    topic: topic
-  });
-
-  if (!title || !className || !topic || !link) {
-    showMessage("materialMessage", "Bütün xanaları doldur.", true);
-    return;
-  }
-
-  if (!/^https?:\/\//i.test(link)) {
-    showMessage("materialMessage", "Düzgün link daxil et.", true);
-    return;
-  }
-
-  const { data: authData } = await supabaseClient.auth.getUser();
-
-  if (!authData.user) {
-    showMessage("materialMessage", "Əvvəlcə müəllim kimi daxil ol.", true);
-    return;
-  }
-
-  const { error } = await supabaseClient
-    .from("english_materials")
-    .insert({
-      title: title,
-      class_name: className,
-      topic: topic,
-      url: link
-    });
-
-  if (error) {
-    showMessage("materialMessage", "Yadda saxlanmadı: " + error.message, true);
-    return;
-  }
-
-  showMessage("materialMessage", "Material uğurla yadda saxlanıldı!");
-
-  document.getElementById("materialTitle").value = "";
-  document.getElementById("materialClass").value = "";
-  document.getElementById("materialTopic").value = "";
-  document.getElementById("materialLink").value = "";
-}
-
         return;
       }
 
@@ -656,7 +607,7 @@ const { error } = await supabaseClient
       if (error) {
         showMessage(
           "resultsArea",
-          "Nəticələri yükləmək mümkün olmadı. SQL funksiyasını yoxlamaq lazımdır.",
+          "Nəticələri yükləmək mümkün olmadı: " + error.message,
           true
         );
         return;
@@ -676,6 +627,80 @@ const { error } = await supabaseClient
         line.textContent = JSON.stringify(item);
         container.appendChild(line);
       });
+    }
+
+    async function addMaterial() {
+      const title = document
+        .getElementById("materialTitle").value.trim();
+
+      const className = document
+        .getElementById("materialClass").value.trim();
+
+      const topic = document
+        .getElementById("materialTopic").value.trim();
+
+      const link = document
+        .getElementById("materialLink").value.trim();
+
+      if (!title || !className || !topic || !link) {
+        showMessage(
+          "materialMessage",
+          "Bütün xanaları doldur.",
+          true
+        );
+        return;
+      }
+
+      if (!/^https?:\/\//i.test(link)) {
+        showMessage(
+          "materialMessage",
+          "Düzgün link daxil et.",
+          true
+        );
+        return;
+      }
+
+      const { data: authData, error: authError } =
+        await supabaseClient.auth.getUser();
+
+      if (authError || !authData.user) {
+        showMessage(
+          "materialMessage",
+          "Əvvəlcə müəllim kimi daxil ol.",
+          true
+        );
+        return;
+      }
+
+      const { error } = await supabaseClient
+        .from("english_materials")
+        .insert({
+          title: title,
+          content: link,
+          grade: className,
+          topic: topic
+        });
+
+      if (error) {
+        showMessage(
+          "materialMessage",
+          "Yadda saxlanmadı: " + error.message,
+          true
+        );
+        return;
+      }
+
+      showMessage(
+        "materialMessage",
+        "Material uğurla yadda saxlanıldı!"
+      );
+
+      document.getElementById("materialTitle").value = "";
+      document.getElementById("materialClass").value = "";
+      document.getElementById("materialTopic").value = "";
+      document.getElementById("materialLink").value = "";
+    }
+
     }
 
     supabaseClient.auth.onAuthStateChange(
