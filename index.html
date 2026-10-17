@@ -226,6 +226,41 @@
       <button type="button" onclick="teacherLogout()">
         Çıxış et
       </button>
+      
+<div class="card">
+  <h2>Material əlavə et</h2>
+
+  <input
+    id="materialTitle"
+    type="text"
+    placeholder="Materialın adı"
+  >
+
+  <input
+    id="materialClass"
+    type="text"
+    placeholder="Sinif (məsələn, 7-ci sinif)"
+  >
+
+  <input
+    id="materialTopic"
+    type="text"
+    placeholder="Mövzu"
+  >
+
+  <input
+    id="materialLink"
+    type="url"
+    placeholder="Materialın linki"
+  >
+
+  <button type="button" onclick="addMaterial()">
+    Materialı yadda saxla
+  </button>
+
+  <p id="materialMessage" class="message"></p>
+</div>
+
     </section>
 
     <section id="passwordPanel" class="card hidden">
@@ -557,6 +592,57 @@
           "Əvvəlcə şagird kimi daxil ol.",
           true
         );
+        
+async function addMaterial() {
+  
+const { error } = await supabaseClient
+  .from("english_materials")
+  .insert({
+    title: title,
+    content: link,
+    grade: className,
+    topic: topic
+  });
+
+  if (!title || !className || !topic || !link) {
+    showMessage("materialMessage", "Bütün xanaları doldur.", true);
+    return;
+  }
+
+  if (!/^https?:\/\//i.test(link)) {
+    showMessage("materialMessage", "Düzgün link daxil et.", true);
+    return;
+  }
+
+  const { data: authData } = await supabaseClient.auth.getUser();
+
+  if (!authData.user) {
+    showMessage("materialMessage", "Əvvəlcə müəllim kimi daxil ol.", true);
+    return;
+  }
+
+  const { error } = await supabaseClient
+    .from("english_materials")
+    .insert({
+      title: title,
+      class_name: className,
+      topic: topic,
+      url: link
+    });
+
+  if (error) {
+    showMessage("materialMessage", "Yadda saxlanmadı: " + error.message, true);
+    return;
+  }
+
+  showMessage("materialMessage", "Material uğurla yadda saxlanıldı!");
+
+  document.getElementById("materialTitle").value = "";
+  document.getElementById("materialClass").value = "";
+  document.getElementById("materialTopic").value = "";
+  document.getElementById("materialLink").value = "";
+}
+
         return;
       }
 
