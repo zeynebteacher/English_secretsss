@@ -210,7 +210,55 @@
 
   async function teacherLogout() {
     const { error } = await supabaseClient.auth.signOut();
+async function createStudent() {
+  const name = document.getElementById("newStudentName").value.trim();
+  const grade = document.getElementById("newStudentGrade").value;
+  const code = document.getElementById("newStudentCode").value.trim();
+  const message = document.getElementById("studentCreateMessage");
 
+  if (!name || !grade || !code) {
+    message.textContent = "Adı, sinfi və giriş kodunu doldur.";
+    return;
+  }
+
+  const { data: authData } = await supabaseClient.auth.getUser();
+
+  if (!authData.user) {
+    message.textContent = "Əvvəlcə müəllim kimi daxil ol.";
+    return;
+  }
+
+  const { data: admin, error: adminError } = await supabaseClient
+    .from("materials_admins")
+    .select("user_id")
+    .eq("user_id", authData.user.id)
+    .maybeSingle();
+
+  if (adminError || !admin) {
+    message.textContent = "Bu hesab üçün müəllim icazəsi tapılmadı.";
+    return;
+  }
+
+  const { error } = await supabaseClient
+    .from("es_students")
+    .insert({
+      full_name: name,
+      grade: grade,
+      student_code: code,
+      is_active: true
+    });
+
+  if (error) {
+    message.textContent = "Xəta: " + error.message;
+    return;
+  }
+
+  message.textContent = "Şagird uğurla yaradıldı!";
+
+  document.getElementById("newStudentName").value = "";
+  document.getElementById("newStudentGrade").value = "";
+  document.getElementById("newStudentCode").value = "";
+}
     if (error) {
       showMessage("teacherMessage", error.message, true);
       return;
