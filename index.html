@@ -401,11 +401,45 @@ async function createStudent() {
 
     const percentage = Math.round(score / questions.length * 100);
 
+(async function () {
+  showMessage("quizResult", "Nəticə yadda saxlanılır...");
+
+  const { data: saved, error } = await supabaseClient.rpc(
+    "student_save_result",
+    {
+      p_token: studentToken,
+      p_test_title: "Nümunə testi",
+      p_score: score,
+      p_total_questions: questions.length,
+      p_percentage: percentage
+    }
+  );
+
+  if (error) {
     showMessage(
       "quizResult",
-      "Nəticən: " + score + "/" + questions.length + " (" + percentage + "%). Bu nəticə hazırda yalnız ekranda göstərilir."
+      "Nəticən: " + score + "/" + questions.length +
+      ". Yadda saxlanmadı: " + error.message,
+      true
     );
-  });
+    return;
+  }
+
+  if (!saved) {
+    showMessage(
+      "quizResult",
+      "Nəticə saxlanmadı. Şagird girişini yoxla.",
+      true
+    );
+    return;
+  }
+
+  showMessage(
+    "quizResult",
+    "Nəticən: " + score + "/" + questions.length +
+    " (" + percentage + "%). Nəticə yadda saxlanıldı!"
+  );
+})();
 
   async function loadMyResults() {
     if (!studentToken) {
