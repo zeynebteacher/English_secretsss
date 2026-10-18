@@ -1,724 +1,432 @@
 
-
 <!DOCTYPE html>
 <html lang="az">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>English Secretss</title>
-
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
   <style>
-    * {
-      box-sizing: border-box;
-    }
-
+    * { box-sizing: border-box; }
     body {
-      margin: 0;
-      padding: 20px;
-      font-family: Arial, sans-serif;
-      background: #f7f0e6;
-      color: #49382e;
+      margin: 0; padding: 20px; font-family: Arial, sans-serif;
+      background: #f7f0e6; color: #49382e;
     }
-
-    header {
-      text-align: center;
-      padding: 24px 10px;
-    }
-
-    header h1 {
-      color: #785640;
-      margin-bottom: 8px;
-    }
-
-    header p {
-      color: #78675b;
-    }
-
-    main {
-      max-width: 650px;
-      margin: auto;
-    }
-
+    header { text-align: center; padding: 24px 10px; }
+    header h1, h2 { color: #785640; }
+    header h1 { margin-bottom: 8px; }
+    header p, .small { color: #78675b; }
+    main { max-width: 650px; margin: auto; }
     .card {
-      background: #fffdf9;
-      border: 1px solid #e6d5c3;
-      border-radius: 16px;
-      padding: 22px;
-      margin-bottom: 18px;
+      background: #fffdf9; border: 1px solid #e6d5c3;
+      border-radius: 16px; padding: 22px; margin-bottom: 18px;
       box-shadow: 0 4px 12px #49382e0d;
     }
-
-    h2 {
-      color: #785640;
-      font-size: 21px;
-      margin-top: 0;
-    }
-
+    h2 { font-size: 21px; margin-top: 0; }
     input, button, textarea {
-      width: 100%;
-      padding: 12px;
-      margin-top: 10px;
-      border-radius: 9px;
-      font-size: 16px;
+      width: 100%; padding: 12px; margin-top: 10px;
+      border-radius: 9px; font-size: 16px;
     }
-
     input, textarea {
-      border: 1px solid #d9c5b0;
-      background: white;
-      color: #49382e;
+      border: 1px solid #d9c5b0; background: white; color: #49382e;
     }
-
     button {
-      border: none;
-      background: #785640;
-      color: white;
-      cursor: pointer;
-      font-weight: bold;
+      border: none; background: #785640; color: white;
+      cursor: pointer; font-weight: bold;
     }
-
-    button:hover {
-      background: #5e4130;
-    }
-
-    button.secondary {
-      background: #d9c3ac;
-      color: #49382e;
-    }
-
-    .hidden {
-      display: none !important;
-    }
-
-    .message {
-      margin-top: 12px;
-      overflow-wrap: anywhere;
-      line-height: 1.5;
-    }
-
+    button:hover { background: #5e4130; }
+    button.secondary { background: #d9c3ac; color: #49382e; }
+    .hidden { display: none !important; }
+    .message { margin-top: 12px; overflow-wrap: anywhere; line-height: 1.5; }
     .question {
-      padding: 14px;
-      margin: 12px 0;
-      border: 1px solid #e6d5c3;
-      border-radius: 10px;
-      background: #fff;
+      padding: 14px; margin: 12px 0; border: 1px solid #e6d5c3;
+      border-radius: 10px; background: #fff;
     }
-
-    .option {
-      display: block;
-      padding: 8px 0;
-      line-height: 1.5;
-    }
-
-    .option input {
-      width: auto;
-      margin-right: 8px;
-    }
-
-    .small {
-      font-size: 13px;
-      color: #78675b;
-      line-height: 1.5;
-    }
+    .option { display: block; padding: 8px 0; line-height: 1.5; }
+    .option input { width: auto; margin-right: 8px; }
+    .small { font-size: 13px; line-height: 1.5; }
   </style>
 </head>
-
 <body>
-  <header>
-    <h1>English Secretss</h1>
-    <p>Learn English. Test yourself. Improve every day.</p>
-  </header>
+<header>
+  <h1>English Secretss</h1>
+  <p>Learn English. Test yourself. Improve every day.</p>
+</header>
 
-  <main>
-    <section class="card">
-      <h2>Şagird girişi</h2>
-      <p class="small">
-        Şagird kodunu daxil et. Kod müəllim tərəfindən əvvəlcədən
-        yaradılmış olmalıdır.
-      </p>
+<main>
+  <section class="card">
+    <h2>Şagird girişi</h2>
+    <p class="small">Şagird kodunu daxil et. Kod müəllim tərəfindən əvvəlcədən yaradılmış olmalıdır.</p>
+    <input id="studentCode" type="text" placeholder="Şagird kodu" autocomplete="off">
+    <button type="button" onclick="studentLogin()">Şagird kimi daxil ol</button>
+    <p id="studentMessage" class="message" role="status"></p>
+  </section>
 
-      <input
-        id="studentCode"
-        type="text"
-        placeholder="Şagird kodu"
-        autocomplete="off"
-      >
+  <section id="studentPanel" class="card hidden">
+    <h2 id="studentWelcome">Xoş gəlmisən!</h2>
+    <p>Hazırda nümunə sınağı işləyə bilərsən.</p>
+    <button type="button" onclick="startTest()">Sınağa başla</button>
+    <button type="button" class="secondary" onclick="loadMyResults()">Nəticələrimi yoxla</button>
 
-      <button type="button" onclick="studentLogin()">
-        Şagird kimi daxil ol
-      </button>
+    <div id="testArea" class="hidden">
+      <hr>
+      <h2>Nümunə İngilis dili sınağı</h2>
+      <p class="small">Bu, 5 suallıq ilkin sınaqdır.</p>
+      <form id="quizForm">
+        <div id="questions"></div>
+        <button type="submit">Cavabları yoxla</button>
+      </form>
+      <div id="quizResult" class="message" role="status"></div>
+    </div>
+    <div id="resultsArea" class="message"></div>
+  </section>
 
-      <p id="studentMessage" class="message" role="status"></p>
-    </section>
+  <section class="card">
+    <h2>Müəllim girişi</h2>
+    <input id="teacherEmail" type="email" placeholder="E-poçt ünvanı" autocomplete="username">
+    <input id="teacherPassword" type="password" placeholder="Şifrə" autocomplete="current-password">
+    <button type="button" onclick="teacherLogin()">Müəllim kimi daxil ol</button>
+    <button type="button" class="secondary" onclick="resetPassword()">Şifrəni bərpa et</button>
+    <p id="teacherMessage" class="message" role="status"></p>
+  </section>
 
-    <section id="studentPanel" class="card hidden">
-      <h2 id="studentWelcome">Xoş gəlmisən!</h2>
-      <p>Hazırda nümunə sınağı işləyə bilərsən.</p>
+  <section id="teacherPanel" class="card hidden">
+    <h2>Müəllim paneli</h2>
+    <p id="teacherWelcome"></p>
+    <p class="small">Materialları əlavə etmək üçün aşağıdakı xanaları doldur.</p>
 
-      <button type="button" onclick="startTest()">
-        Sınağa başla
-      </button>
+    <div>
+      <h2>Material əlavə et</h2>
+      <input id="materialTitle" type="text" placeholder="Materialın adı">
+      <input id="materialClass" type="text" placeholder="Sinif (məsələn, 7-ci sinif)">
+      <input id="materialTopic" type="text" placeholder="Mövzu">
+      <input id="materialLink" type="url" placeholder="Materialın linki">
+      <button type="button" onclick="addMaterial()">Materialı yadda saxla</button>
+      <p id="materialMessage" class="message" role="status"></p>
+    </div>
 
-      <button type="button" class="secondary" onclick="loadMyResults()">
-        Nəticələrimi yoxla
-      </button>
+    <button type="button" onclick="teacherLogout()">Çıxış et</button>
+  </section>
 
-      <div id="testArea" class="hidden">
-        <hr>
-        <h2>Nümunə İngilis dili sınağı</h2>
-        <p class="small">
-          Bu, düymələri və cavab yoxlamasını sınaqdan keçirmək üçün
-          hazırlanmış 5 suallıq ilkin versiyadır.
-        </p>
+  <section id="passwordPanel" class="card hidden">
+    <h2>Yeni şifrə yarat</h2>
+    <input id="newPassword" type="password" placeholder="Yeni şifrə" autocomplete="new-password">
+    <button type="button" onclick="updatePassword()">Şifrəni yenilə</button>
+    <p id="passwordMessage" class="message" role="status"></p>
+  </section>
+</main>
 
-        <form id="quizForm">
-          <div id="questions"></div>
-          <button type="submit">Cavabları yoxla</button>
-        </form>
+<script>
+  const SUPABASE_URL = "https://ngnonuzopyeymgjoypkh.supabase.co";
+  const SUPABASE_KEY = "sb_publishable_KAsjgKdKnFOHrims8ZbnkQ__4nZ1M2S";
 
-        <div id="quizResult" class="message" role="status"></div>
-      </div>
+  const supabaseClient = window.supabase.createClient(
+    SUPABASE_URL, SUPABASE_KEY
+  );
 
-      <div id="resultsArea" class="message"></div>
-    </section>
+  let studentToken = "";
+  let studentName = "";
 
-    <section class="card">
-      <h2>Müəllim girişi</h2>
+  const questions = [
+    { question: "She ___ to school every day.", options: ["go", "goes", "going", "gone"], answer: 1 },
+    { question: "What is the plural of child?", options: ["childs", "childes", "children", "childrens"], answer: 2 },
+    { question: "Choose the synonym of happy.", options: ["sad", "angry", "glad", "tired"], answer: 2 },
+    { question: "They ___ TV at the moment.", options: ["watch", "watched", "are watching", "watches"], answer: 2 },
+    { question: "Choose the opposite of difficult.", options: ["hard", "easy", "heavy", "strong"], answer: 1 }
+  ];
 
-      <input
-        id="teacherEmail"
-        type="email"
-        placeholder="E-poçt ünvanı"
-        autocomplete="username"
-      >
+  function showMessage(id, message, isError = false) {
+    const element = document.getElementById(id);
+    if (!element) return;
+    element.textContent = message;
+    element.style.color = isError ? "#a12626" : "#496b42";
+  }
 
-      <input
-        id="teacherPassword"
-        type="password"
-        placeholder="Şifrə"
-        autocomplete="current-password"
-      >
+  async function teacherLogin() {
+    const email = document.getElementById("teacherEmail").value.trim();
+    const password = document.getElementById("teacherPassword").value;
 
-      <button type="button" onclick="teacherLogin()">
-        Müəllim kimi daxil ol
-      </button>
-
-      <button
-        type="button"
-        class="secondary"
-        onclick="resetPassword()"
-      >
-        Şifrəni bərpa et
-      </button>
-
-      <p id="teacherMessage" class="message" role="status"></p>
-    </section>
-
-    <section id="teacherPanel" class="card hidden">
-      <h2>Müəllim paneli</h2>
-      <p id="teacherWelcome"></p>
-      <p class="small">
-        Müəllim hesabına giriş aktivdir. Materialların və şagird
-        nəticələrinin idarə edilməsi növbəti mərhələdə qoşulacaq.
-      </p>
-
-      <button type="button" onclick="teacherLogout()">
-        Çıxış et
-      </button>
-      
-<div class="card">
-  <h2>Material əlavə et</h2>
-
-  <input
-    id="materialTitle"
-    type="text"
-    placeholder="Materialın adı"
-  >
-
-  <input
-    id="materialClass"
-    type="text"
-    placeholder="Sinif (məsələn, 7-ci sinif)"
-  >
-
-  <input
-    id="materialTopic"
-    type="text"
-    placeholder="Mövzu"
-  >
-
-  <input
-    id="materialLink"
-    type="url"
-    placeholder="Materialın linki"
-  >
-
-  <button type="button" onclick="addMaterial()">
-    Materialı yadda saxla
-  </button>
-
-  <p id="materialMessage" class="message"></p>
-</div>
-
-    </section>
-
-    <section id="passwordPanel" class="card hidden">
-      <h2>Yeni şifrə yarat</h2>
-
-      <input
-        id="newPassword"
-        type="password"
-        placeholder="Yeni şifrə"
-        autocomplete="new-password"
-      >
-
-      <button type="button" onclick="updatePassword()">
-        Şifrəni yenilə
-      </button>
-
-      <p id="passwordMessage" class="message" role="status"></p>
-    </section>
-  </main>
-
-  <script>
-    const SUPABASE_URL =
-      "https://ngnonuzopyeymgjoypkh.supabase.co";
-
-    const SUPABASE_KEY =
-      "sb_publishable_KAsjgKdKnFOHrims8ZbnkQ__4nZ1M2S";
-
-    const supabaseClient = window.supabase.createClient(
-      SUPABASE_URL,
-      SUPABASE_KEY
-    );
-
-    let studentToken = "";
-    let studentName = "";
-
-    const questions = [
-      {
-        question: "She ___ to school every day.",
-        options: ["go", "goes", "going", "gone"],
-        answer: 1
-      },
-      {
-        question: "What is the plural of child?",
-        options: ["childs", "childes", "children", "childrens"],
-        answer: 2
-      },
-      {
-        question: "Choose the synonym of happy.",
-        options: ["sad", "angry", "glad", "tired"],
-        answer: 2
-      },
-      {
-        question: "They ___ TV at the moment.",
-        options: ["watch", "watched", "are watching", "watches"],
-        answer: 2
-      },
-      {
-        question: "Choose the opposite of difficult.",
-        options: ["hard", "easy", "heavy", "strong"],
-        answer: 1
-      }
-    ];
-
-    function showMessage(id, message, isError = false) {
-      const element = document.getElementById(id);
-      element.textContent = message;
-      element.style.color = isError ? "#a12626" : "#496b42";
+    if (!email || !password) {
+      showMessage("teacherMessage", "E-poçt və şifrəni daxil et.", true);
+      return;
     }
 
-    async function teacherLogin() {
-      const email = document
-        .getElementById("teacherEmail").value.trim();
+    showMessage("teacherMessage", "Giriş yoxlanılır...");
 
-      const password = document
-        .getElementById("teacherPassword").value;
-
-      if (!email || !password) {
-        showMessage(
-          "teacherMessage",
-          "E-poçt və şifrəni daxil et.",
-          true
-        );
-        return;
-      }
-
-      showMessage("teacherMessage", "Giriş yoxlanılır...");
-
-      const { data, error } =
-        await supabaseClient.auth.signInWithPassword({
-          email: email,
-          password: password
-        });
+    try {
+      const { data, error } = await supabaseClient.auth.signInWithPassword({
+        email: email,
+        password: password
+      });
 
       if (error) {
-        showMessage(
-          "teacherMessage",
-          "Giriş alınmadı: " + error.message,
-          true
-        );
+        showMessage("teacherMessage", "Giriş alınmadı: " + error.message, true);
         return;
       }
 
-      document.getElementById("teacherPanel")
-        .classList.remove("hidden");
+      if (!data.user) {
+        showMessage("teacherMessage", "Hesab məlumatı tapılmadı.", true);
+        return;
+      }
 
+      document.getElementById("teacherPanel").classList.remove("hidden");
       document.getElementById("teacherWelcome").textContent =
         "Daxil olan hesab: " + data.user.email;
 
       showMessage("teacherMessage", "Giriş uğurludur!");
+      document.getElementById("teacherPanel").scrollIntoView({ behavior: "smooth" });
+    } catch (error) {
+      showMessage("teacherMessage", "Gözlənilməz xəta: " + error.message, true);
+    }
+  }
+
+  async function teacherLogout() {
+    const { error } = await supabaseClient.auth.signOut();
+
+    if (error) {
+      showMessage("teacherMessage", error.message, true);
+      return;
     }
 
-    async function teacherLogout() {
-      const { error } = await supabaseClient.auth.signOut();
+    document.getElementById("teacherPanel").classList.add("hidden");
+    showMessage("teacherMessage", "Hesabdan çıxış edildi.");
+  }
 
-      if (error) {
-        showMessage("teacherMessage", error.message, true);
-        return;
-      }
+  async function resetPassword() {
+    const email = document.getElementById("teacherEmail").value.trim();
 
-      document.getElementById("teacherPanel")
-        .classList.add("hidden");
-
-      showMessage("teacherMessage", "Hesabdan çıxış edildi.");
+    if (!email) {
+      showMessage("teacherMessage", "Əvvəlcə e-poçt ünvanını yaz.", true);
+      return;
     }
 
-    async function resetPassword() {
-      const email = document
-        .getElementById("teacherEmail").value.trim();
+    showMessage("teacherMessage", "Sorğu göndərilir...");
 
-      if (!email) {
-        showMessage(
-          "teacherMessage",
-          "Əvvəlcə e-poçt ünvanını yaz.",
-          true
-        );
-        return;
-      }
-
-      showMessage("teacherMessage", "Sorğu göndərilir...");
-
-      const { error } =
-        await supabaseClient.auth.resetPasswordForEmail(email, {
-          redirectTo: window.location.origin +
-            window.location.pathname
-        });
-
-      if (error) {
-        showMessage(
-          "teacherMessage",
-          "Xəta: " + error.message,
-          true
-        );
-        return;
-      }
-
-      showMessage(
-        "teacherMessage",
-        "Şifrə bərpa məktubu göndərildi. E-poçtunu yoxla."
-      );
-    }
-
-    async function updatePassword() {
-      const password =
-        document.getElementById("newPassword").value;
-
-      if (password.length < 6) {
-        showMessage(
-          "passwordMessage",
-          "Şifrə ən azı 6 simvol olmalıdır.",
-          true
-        );
-        return;
-      }
-
-      const { error } =
-        await supabaseClient.auth.updateUser({
-          password: password
-        });
-
-      if (error) {
-        showMessage(
-          "passwordMessage",
-          "Şifrə dəyişdirilmədi: " + error.message,
-          true
-        );
-        return;
-      }
-
-      showMessage(
-        "passwordMessage",
-        "Şifrə uğurla yeniləndi."
-      );
-    }
-
-    async function studentLogin() {
-      const code = document
-        .getElementById("studentCode").value.trim();
-
-      if (!code) {
-        showMessage(
-          "studentMessage",
-          "Şagird kodunu daxil et.",
-          true
-        );
-        return;
-      }
-
-      showMessage("studentMessage", "Giriş yoxlanılır...");
-
-      const { data, error } = await supabaseClient.rpc(
-        "student_login",
-        { p_code: code }
-        
-      );
-
-      if (error) {
-        showMessage(
-          "studentMessage",
-          "Giriş alınmadı. SQL funksiyası qurulmalıdır və ya kod yoxlanmalıdır.",
-          true
-        );
-        return;
-      }
-
-      const result = Array.isArray(data) ? data[0] : data;
-
-      if (!result || !result.token) {
-        showMessage(
-          "studentMessage",
-          "Bu kodla giriş mümkün olmadı.",
-          true
-        );
-        return;
-      }
-
-      studentToken = result.token;
-      studentName =
-        result.student_name || result.name || "Şagird";
-
-      document.getElementById("studentWelcome").textContent =
-        "Xoş gəlmisən, " + studentName + "!";
-
-      document.getElementById("studentPanel")
-        .classList.remove("hidden");
-
-      showMessage("studentMessage", "Giriş uğurludur!");
-    }
-
-    function startTest() {
-      document.getElementById("testArea")
-        .classList.remove("hidden");
-
-      document.getElementById("quizResult").textContent = "";
-      document.getElementById("resultsArea").textContent = "";
-
-      renderQuestions();
-
-      document.getElementById("testArea")
-        .scrollIntoView({ behavior: "smooth" });
-    }
-
-    function renderQuestions() {
-      const container = document.getElementById("questions");
-      container.innerHTML = "";
-
-      questions.forEach((item, index) => {
-        const questionBox = document.createElement("div");
-        questionBox.className = "question";
-
-        const heading = document.createElement("p");
-        heading.textContent =
-          (index + 1) + ". " + item.question;
-
-        questionBox.appendChild(heading);
-
-        item.options.forEach((option, optionIndex) => {
-          const label = document.createElement("label");
-          label.className = "option";
-
-          const radio = document.createElement("input");
-          radio.type = "radio";
-          radio.name = "question" + index;
-          radio.value = optionIndex;
-          radio.required = true;
-
-          label.appendChild(radio);
-          label.appendChild(document.createTextNode(option));
-          questionBox.appendChild(label);
-        });
-
-        container.appendChild(questionBox);
-      });
-    }
-
-    document.getElementById("quizForm")
-      .addEventListener("submit", function(event) {
-        event.preventDefault();
-
-        let score = 0;
-
-        questions.forEach((item, index) => {
-          const selected = document.querySelector(
-            'input[name="question' + index + '"]:checked'
-          );
-
-          if (
-            selected &&
-            Number(selected.value) === item.answer
-          ) {
-            score++;
-          }
-        });
-
-        const percentage = Math.round(
-          score / questions.length * 100
-        );
-
-        showMessage(
-          "quizResult",
-          "Nəticən: " + score + "/" + questions.length +
-          " (" + percentage + "%). Bu nəticə hazırda yalnız ekranda göstərilir."
-        );
+    try {
+      const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
+        redirectTo: window.location.origin + window.location.pathname
       });
 
-    
-      
-    async function loadMyResults() {
-      if (!studentToken) {
-        showMessage(
-          "resultsArea",
-          "Əvvəlcə şagird kimi daxil ol.",
-          true
-        );
-        return;
-      }
-
-      showMessage("resultsArea", "Nəticələr yüklənir...");
-
-      const { data, error } = await supabaseClient.rpc(
-        "student_get_results",
-        { p_token: studentToken }
-      );
-
       if (error) {
-        showMessage(
-          "resultsArea",
-          "Nəticələri yükləmək mümkün olmadı: " + error.message,
-          true
-        );
+        showMessage("teacherMessage", "Xəta: " + error.message, true);
         return;
       }
 
-      const container = document.getElementById("resultsArea");
-      container.textContent = "";
+      showMessage("teacherMessage", "Şifrə bərpa məktubu göndərildi. E-poçtunu yoxla.");
+    } catch (error) {
+      showMessage("teacherMessage", "Xəta: " + error.message, true);
+    }
+  }
 
-      if (!data || data.length === 0) {
-        container.textContent =
-          "Hələ saxlanılmış nəticən yoxdur.";
-        return;
-      }
+  async function updatePassword() {
+    const password = document.getElementById("newPassword").value;
 
-      data.forEach((item) => {
-        const line = document.createElement("p");
-        line.textContent = JSON.stringify(item);
-        container.appendChild(line);
-      });
+    if (password.length < 6) {
+      showMessage("passwordMessage", "Şifrə ən azı 6 simvol olmalıdır.", true);
+      return;
     }
 
-    async function addMaterial() {
-      const title = document
-        .getElementById("materialTitle").value.trim();
+    const { error } = await supabaseClient.auth.updateUser({ password: password });
 
-      const className = document
-        .getElementById("materialClass").value.trim();
+    if (error) {
+      showMessage("passwordMessage", "Şifrə dəyişdirilmədi: " + error.message, true);
+      return;
+    }
 
-      const topic = document
-        .getElementById("materialTopic").value.trim();
+    showMessage("passwordMessage", "Şifrə uğurla yeniləndi.");
+  }
 
-      const link = document
-        .getElementById("materialLink").value.trim();
+  async function studentLogin() {
+    const code = document.getElementById("studentCode").value.trim();
 
-      if (!title || !className || !topic || !link) {
-        showMessage(
-          "materialMessage",
-          "Bütün xanaları doldur.",
-          true
-        );
-        return;
-      }
+    if (!code) {
+      showMessage("studentMessage", "Şagird kodunu daxil et.", true);
+      return;
+    }
 
-      if (!/^https?:\/\//i.test(link)) {
-        showMessage(
-          "materialMessage",
-          "Düzgün link daxil et.",
-          true
-        );
-        return;
-      }
+    showMessage("studentMessage", "Giriş yoxlanılır...");
 
-      const { data: authData, error: authError } =
-        await supabaseClient.auth.getUser();
+    const { data, error } = await supabaseClient.rpc("student_login", {
+      p_code: code
+    });
+
+    if (error) {
+      showMessage("studentMessage", "Giriş alınmadı. SQL funksiyasını və ya kodu yoxlamaq lazımdır.", true);
+      return;
+    }
+
+    const result = Array.isArray(data) ? data[0] : data;
+
+    if (!result || !result.token) {
+      showMessage("studentMessage", "Bu kodla giriş mümkün olmadı.", true);
+      return;
+    }
+
+    studentToken = result.token;
+    studentName = result.student_name || result.name || "Şagird";
+
+    document.getElementById("studentWelcome").textContent = "Xoş gəlmisən, " + studentName + "!";
+    document.getElementById("studentPanel").classList.remove("hidden");
+    showMessage("studentMessage", "Giriş uğurludur!");
+  }
+
+  function startTest() {
+    document.getElementById("testArea").classList.remove("hidden");
+    document.getElementById("quizResult").textContent = "";
+    document.getElementById("resultsArea").textContent = "";
+    renderQuestions();
+    document.getElementById("testArea").scrollIntoView({ behavior: "smooth" });
+  }
+
+  function renderQuestions() {
+    const container = document.getElementById("questions");
+    container.innerHTML = "";
+
+    questions.forEach((item, index) => {
+      const questionBox = document.createElement("div");
+      questionBox.className = "question";
+
+      const heading = document.createElement("p");
+      heading.textContent = (index + 1) + ". " + item.question;
+      questionBox.appendChild(heading);
+
+      item.options.forEach((option, optionIndex) => {
+        const label = document.createElement("label");
+        label.className = "option";
+
+        const radio = document.createElement("input");
+        radio.type = "radio";
+        radio.name = "question" + index;
+        radio.value = optionIndex;
+        radio.required = true;
+
+        label.appendChild(radio);
+        label.appendChild(document.createTextNode(option));
+        questionBox.appendChild(label);
+      });
+
+      container.appendChild(questionBox);
+    });
+  }
+
+  document.getElementById("quizForm").addEventListener("submit", function(event) {
+    event.preventDefault();
+
+    let score = 0;
+
+    questions.forEach((item, index) => {
+      const selected = document.querySelector(
+        'input[name="question' + index + '"]:checked'
+      );
+
+      if (selected && Number(selected.value) === item.answer) score++;
+    });
+
+    const percentage = Math.round(score / questions.length * 100);
+
+    showMessage(
+      "quizResult",
+      "Nəticən: " + score + "/" + questions.length + " (" + percentage + "%). Bu nəticə hazırda yalnız ekranda göstərilir."
+    );
+  });
+
+  async function loadMyResults() {
+    if (!studentToken) {
+      showMessage("resultsArea", "Əvvəlcə şagird kimi daxil ol.", true);
+      return;
+    }
+
+    showMessage("resultsArea", "Nəticələr yüklənir...");
+
+    const { data, error } = await supabaseClient.rpc("student_get_results", {
+      p_token: studentToken
+    });
+
+    if (error) {
+      showMessage("resultsArea", "Nəticələri yükləmək mümkün olmadı: " + error.message, true);
+      return;
+    }
+
+    const container = document.getElementById("resultsArea");
+    container.textContent = "";
+
+    if (!data || data.length === 0) {
+      container.textContent = "Hələ saxlanılmış nəticən yoxdur.";
+      return;
+    }
+
+    data.forEach((item) => {
+      const line = document.createElement("p");
+      line.textContent = JSON.stringify(item);
+      container.appendChild(line);
+    });
+  }
+
+  async function addMaterial() {
+    const title = document.getElementById("materialTitle").value.trim();
+    const className = document.getElementById("materialClass").value.trim();
+    const topic = document.getElementById("materialTopic").value.trim();
+    const link = document.getElementById("materialLink").value.trim();
+
+    if (!title || !className || !topic || !link) {
+      showMessage("materialMessage", "Bütün xanaları doldur.", true);
+      return;
+    }
+
+    if (!/^https?:\/\//i.test(link)) {
+      showMessage("materialMessage", "Düzgün link daxil et.", true);
+      return;
+    }
+
+    showMessage("materialMessage", "Material yadda saxlanılır...");
+
+    try {
+      const { data: authData, error: authError } = await supabaseClient.auth.getUser();
 
       if (authError || !authData.user) {
-        showMessage(
-          "materialMessage",
-          "Əvvəlcə müəllim kimi daxil ol.",
-          true
-        );
+        showMessage("materialMessage", "Əvvəlcə müəllim kimi daxil ol.", true);
         return;
       }
 
-      const { error } = await supabaseClient
-        .from("english_materials")
-        .insert({
-          title: title,
-          content: link,
-          grade: className,
-          topic: topic
-        });
+      const { error } = await supabaseClient.from("english_materials").insert({
+        title: title,
+        content: link,
+        grade: className,
+        topic: topic
+      });
 
       if (error) {
-        showMessage(
-          "materialMessage",
-          "Yadda saxlanmadı: " + error.message,
-          true
-        );
+        showMessage("materialMessage", "Yadda saxlanmadı: " + error.message, true);
         return;
       }
 
-      showMessage(
-        "materialMessage",
-        "Material uğurla yadda saxlanıldı!"
-      );
+      showMessage("materialMessage", "Material uğurla yadda saxlanıldı!");
 
       document.getElementById("materialTitle").value = "";
       document.getElementById("materialClass").value = "";
       document.getElementById("materialTopic").value = "";
       document.getElementById("materialLink").value = "";
+    } catch (error) {
+      showMessage("materialMessage", "Xəta: " + error.message, true);
+    }
+  }
+
+  supabaseClient.auth.onAuthStateChange(function(event, session) {
+    if (
+      event === "PASSWORD_RECOVERY" ||
+      window.location.hash.includes("type=recovery")
+    ) {
+      document.getElementById("passwordPanel").classList.remove("hidden");
     }
 
+    if (!session) {
+      document.getElementById("teacherPanel").classList.add("hidden");
+    } else if (session.user) {
+      document.getElementById("teacherPanel").classList.remove("hidden");
+      document.getElementById("teacherWelcome").textContent =
+        "Daxil olan hesab: " + session.user.email;
     }
-
-    supabaseClient.auth.onAuthStateChange(
-      function(event, session) {
-        if (
-          event === "PASSWORD_RECOVERY" ||
-          window.location.hash.includes("type=recovery")
-        ) {
-          document.getElementById("passwordPanel")
-            .classList.remove("hidden");
-        }
-
-        if (!session) {
-          document.getElementById("teacherPanel")
-            .classList.add("hidden");
-        }
-      
-    );
-  </script>
+  });
+</script>
 </body>
 </html>
