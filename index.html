@@ -94,6 +94,34 @@
     <h2>Müəllim paneli</h2>
     <p id="teacherWelcome"></p>
     <p class="small">Materialları əlavə etmək üçün aşağıdakı xanaları doldur.</p>
+    <hr>
+
+<h3>Şagird yarat</h3>
+
+<label for="newStudentName">Şagirdin adı və soyadı</label>
+<input id="newStudentName" type="text" placeholder="Ad və soyad">
+
+<label for="newStudentGrade">Sinif</label>
+<select id="newStudentGrade">
+  <option value="">Sinfi seç</option>
+  <option value="2">2-ci sinif</option>
+  <option value="3">3-cü sinif</option>
+  <option value="4">4-cü sinif</option>
+  <option value="5">5-ci sinif</option>
+  <option value="6">6-cı sinif</option>
+  <option value="7">7-ci sinif</option>
+  <option value="8">8-ci sinif</option>
+  <option value="9">9-cu sinif</option>
+  <option value="10">10-cu sinif</option>
+  <option value="11">11-ci sinif</option>
+</select>
+
+<label for="newStudentCode">Şagirdin giriş kodu</label>
+<input id="newStudentCode" type="text" placeholder="Məsələn: ZN2026A">
+
+<button type="button" onclick="createStudent()">Şagird yarat</button>
+
+<p id="studentCreateMessage"></p>
 
     <div>
       <h2>Material əlavə et</h2>
