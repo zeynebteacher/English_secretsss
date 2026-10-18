@@ -386,22 +386,23 @@ async function createStudent() {
     });
   }
 
-  document.getElementById("quizForm").addEventListener("submit", function(event) {
-    event.preventDefault();
+  document.getElementById("quizForm").addEventListener("submit", async function(event) {
+  event.preventDefault();
 
-    let score = 0;
+  let score = 0;
 
-    questions.forEach((item, index) => {
-      const selected = document.querySelector(
-        'input[name="question' + index + '"]:checked'
-      );
+  questions.forEach((item, index) => {
+    const selected = document.querySelector(
+      'input[name="question' + index + '"]:checked'
+    );
 
-      if (selected && Number(selected.value) === item.answer) score++;
-    });
+    if (selected && Number(selected.value) === item.answer) {
+      score++;
+    }
+  });
 
-    const percentage = Math.round(score / questions.length * 100);
+  const percentage = Math.round(score / questions.length * 100);
 
-(async function () {
   showMessage("quizResult", "Nəticə yadda saxlanılır...");
 
   const { data: saved, error } = await supabaseClient.rpc(
@@ -416,21 +417,12 @@ async function createStudent() {
   );
 
   if (error) {
-    showMessage(
-      "quizResult",
-      "Nəticən: " + score + "/" + questions.length +
-      ". Yadda saxlanmadı: " + error.message,
-      true
-    );
+    showMessage("quizResult", "Yadda saxlanmadı: " + error.message, true);
     return;
   }
 
   if (!saved) {
-    showMessage(
-      "quizResult",
-      "Nəticə saxlanmadı. Şagird girişini yoxla.",
-      true
-    );
+    showMessage("quizResult", "Nəticə saxlanmadı. Şagird girişini yoxla.", true);
     return;
   }
 
@@ -439,7 +431,7 @@ async function createStudent() {
     "Nəticən: " + score + "/" + questions.length +
     " (" + percentage + "%). Nəticə yadda saxlanıldı!"
   );
-})();
+});
 
   async function loadMyResults() {
     if (!studentToken) {
