@@ -119,7 +119,6 @@
 <label for="newStudentCode">Şagirdin giriş kodu</label>
 <input id="newStudentCode" type="text" placeholder="Məsələn: ZN2026A">
 
-<button type="button" onclick="createStudent()">Şagird yarat</button>
 
 <p id="studentCreateMessage"></p>
 
@@ -143,7 +142,9 @@
     <p id="passwordMessage" class="message" role="status"></p>
   </section>
 </main>
-
+<button type="button" onclick="alert('Düymə işləyir!'); createStudent();">
+  Şagird yarat
+</button>
 <script>
   const SUPABASE_URL = "https://ngnonuzopyeymgjoypkh.supabase.co";
   const SUPABASE_KEY = "sb_publishable_KAsjgKdKnFOHrims8ZbnkQ__4nZ1M2S";
