@@ -388,12 +388,14 @@
         return;
       }
 
-      const { error } = await supabaseClient.from("english_materials").insert({
-        title: title,
-        content: link,
-        grade: className,
-        topic: topic
-      });
+      
+const { error } = await supabaseClient.from("english_materials").insert({
+  Title: title,
+  Content: link,
+  Grade: className,
+  Topic: topic
+});
+
 
       if (error) {
         showMessage("materialMessage", "Yadda saxlanmadı: " + error.message, true);
