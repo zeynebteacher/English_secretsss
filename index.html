@@ -89,6 +89,13 @@ a{color:var(--brown);overflow-wrap:anywhere}
 <p>Müəllim hesabına daxil oldun.</p>
 <button onclick="teacherLogout()">Çıxış</button>
 
+<h3>Şagird əlavə et</h3>
+<input id="newStudentName" placeholder="Şagirdin adı və soyadı">
+<input id="newStudentGrade" placeholder="Sinif, məsələn 8">
+<button onclick="addStudent()">Şagirdi əlavə et</button>
+<div id="addStudentMessage" class="message"></div>
+<div id="studentsList"></div>
+
 <h3>Material əlavə et</h3>
 <input id="materialTitle" placeholder="Materialın adı">
 <input id="materialGrade" placeholder="Sinif, məsələn 8">
@@ -489,6 +496,73 @@ function startExam() {
   area.appendChild(form);
   area.appendChild(result);
   area.scrollIntoView({behavior:"smooth",block:"start"});
+}
+
+async function addStudent() {
+  const name = document.getElementById("newStudentName").value.trim();
+  const grade = document.getElementById("newStudentGrade").value.trim();
+  const btn = document.querySelector(
+    '#teacherPanel button[onclick="addStudent()"]'
+  );
+
+  if (!name) {
+    message("addStudentMessage", "Şagirdin adını və soyadını yaz.");
+    return;
+  }
+
+  if (btn) btn.disabled = true;
+
+  try {
+    const { data: authData, error: authError } =
+      await supabaseClient.auth.getUser();
+
+    if (authError || !authData.user) {
+      message("addStudentMessage", "Əvvəlcə müəllim kimi daxil ol.");
+      return;
+    }
+
+    const { data, error } = await supabaseClient.rpc(
+      "teacher_create_student",
+      { p_full_name: name }
+    );
+
+    if (error) {
+      message("addStudentMessage", "Şagird əlavə edilmədi: " + error.message);
+      return;
+    }
+
+    const student = Array.isArray(data) ? data[0] : data;
+    const code = typeof student === "string"
+      ? student
+      : student?.student_code || student?.code;
+
+    if (!code) {
+      message(
+        "addStudentMessage",
+        "Funksiya işləyib, amma giriş kodu cavabda görünmədi. Funksiyanın nəticə formatını yoxlamalıyıq."
+      );
+      return;
+    }
+
+    message(
+      "addStudentMessage",
+      "Şagird əlavə edildi!\nAd: " + name +
+      "\nSinif: " + (grade || "-") +
+      "\nGiriş kodu: " + code
+    );
+
+    const row = document.createElement("p");
+    row.textContent = name + " — " + (grade || "Sinif göstərilməyib") +
+      " — Kod: " + code;
+
+    document.getElementById("studentsList").appendChild(row);
+    document.getElementById("newStudentName").value = "";
+    document.getElementById("newStudentGrade").value = "";
+  } catch (error) {
+    message("addStudentMessage", "Xəta: " + error.message);
+  } finally {
+    if (btn) btn.disabled = false;
+  }
 }
 
 // SƏHİFƏ AÇILANDA
