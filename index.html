@@ -342,6 +342,8 @@ async function loadMaterials() {
   }
 }
 
+let currentStudent = null;
+
 // ŞAGİRD GİRİŞİ
 async function studentLogin() {
   const name = document.getElementById("studentName").value.trim();
@@ -361,26 +363,34 @@ async function studentLogin() {
       p_code: code
     });
 
-    if (error) {
-      message("studentMessage",
-        "Giriş alınmadı. student_login funksiyasını və kodu yoxla.");
-      return;
-    }
+    if (error) throw error;
 
-    if (data === false || data === null) {
+    // Funksiya obyekt qaytara bilər
+    const student = Array.isArray(data) ? data[0] : data;
+
+    if (
+      !student ||
+      student.success === false ||
+      !student.id
+    ) {
       message("studentMessage", "Ad, soyad və ya giriş kodu yanlışdır.");
       return;
     }
 
+    currentStudent = student;
+
     message("studentMessage", "Giriş uğurludur!");
+
     document.getElementById("studentDashboard").textContent =
-      "Xoş gəlmisən, " + name + "!";
+      "Xoş gəlmisən, " + student.full_name + "!";
+
   } catch (error) {
-    message("studentMessage", "Xəta: " + error.message);
+    message("studentMessage", "Giriş xətası: " + error.message);
   } finally {
     btn.disabled = false;
   }
 }
+
 
 // 30 SUALLIQ SINAQ
 const examQuestions = [
