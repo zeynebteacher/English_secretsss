@@ -88,6 +88,13 @@ a{color:var(--brown);overflow-wrap:anywhere}
 <h2>Müəllim paneli</h2>
 <p>Müəllim hesabına daxil oldun.</p>
 <button onclick="teacherLogout()">Çıxış</button>
+  
+<hr>
+<h3>Şagirdlərin sınaq nəticələri</h3>
+<button onclick="loadTestResults()">Nəticələri yenilə</button>
+<div id="testResultsMessage" class="message"></div>
+<div id="testResultsList"></div>
+
 
 <h3>Şagird əlavə et</h3>
 <input id="newStudentName" placeholder="Şagirdin adı və soyadı">
@@ -185,6 +192,62 @@ async function teacherLogout() {
   document.getElementById("teacherPassword").value = "";
   message("teacherMessage", "Hesabdan çıxış edildi.");
 }
+  
+async function loadTestResults() {
+  const list = document.getElementById("testResultsList");
+  const status = document.getElementById("testResultsMessage");
+
+  list.innerHTML = "";
+  status.textContent = "Nəticələr yüklənir...";
+
+  try {
+    const { data, error } = await supabaseClient
+      .from("es_test_results")
+      .select("student_id, test_title, score, total, created_at")
+      .order("created_at", { ascending: false });
+
+    if (error) throw error;
+
+    if (!data || data.length === 0) {
+      status.textContent = "Hələ nəticə yoxdur.";
+      return;
+    }
+
+    const { data: students, error: studentError } = await supabaseClient
+      .from("es_students")
+      .select("id, full_name");
+
+    if (studentError) throw studentError;
+
+    const names = {};
+    (students || []).forEach(student => {
+      names[student.id] = student.full_name;
+    });
+
+    data.forEach(item => {
+      const row = document.createElement("div");
+      row.className = "card";
+
+      const percent = item.total
+        ? Math.round(item.score / item.total * 100)
+        : 0;
+
+      row.textContent =
+        (names[item.student_id] || "Şagird") +
+        " | " + item.test_title +
+        " | Bal: " + item.score + "/" + item.total +
+        " | " + percent + "%" +
+        " | " + new Date(item.created_at).toLocaleString("az-AZ");
+
+      list.appendChild(row);
+    });
+
+    status.textContent = "Nəticə sayı: " + data.length;
+  } catch (error) {
+    status.textContent = "Xəta: " + error.message;
+  }
+}
+
 
 // MATERİAL ƏLAVƏ ETMƏ
 async function saveMaterial() {
