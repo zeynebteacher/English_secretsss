@@ -426,7 +426,8 @@ const examQuestions = [
 {q:"Choose the correct sentence.",o:["She are happy.","They is here.","I am ready.","He am a boy."],a:2}
 ];
 
-function startExam() {
+
+async function startExam() {
   const area = document.getElementById("examArea");
   area.innerHTML = "";
 
@@ -468,10 +469,13 @@ function startExam() {
   result.id = "examResult";
   result.className = "card";
 
-  form.addEventListener("submit", function(e) {
+  form.addEventListener("submit", async function(e) {
     e.preventDefault();
+    submit.disabled = true;
 
     let score = 0;
+    const answers = [];
+
     result.innerHTML = "";
 
     examQuestions.forEach((q, i) => {
@@ -479,34 +483,68 @@ function startExam() {
         'input[name="q' + i + '"]:checked'
       );
 
-      const row = document.createElement("p");
+      const correct = selected &&
+        Number(selected.value) === q.a;
 
-      if (selected && Number(selected.value) === q.a) {
-        score++;
-        row.textContent =
-          (i + 1) + ". Düzgün cavab: " + q.o[q.a] + " ✓";
-      } else {
-        row.textContent =
-          (i + 1) + ". Düzgün cavab: " + q.o[q.a] + " ✗";
-      }
+      if (correct) score++;
+
+      answers.push({
+        question: q.q,
+        selected: selected ? Number(selected.value) : null,
+        correct: q.a
+      });
+
+      const row = document.createElement("p");
+      row.textContent =
+        (i + 1) + ". Düzgün cavab: " + q.o[q.a] +
+        (correct ? " ✓" : " ✗");
 
       result.appendChild(row);
     });
 
+    const percent = Math.round(score / examQuestions.length * 100);
     const summary = document.createElement("h3");
+
     summary.textContent =
-      "Nəticə: " + score + "/30 — " +
-      Math.round(score / 30 * 100) + "%";
+      "Nəticə: " + score + "/" + examQuestions.length +
+      " — " + percent + "%";
 
     result.prepend(summary);
-    submit.disabled = true;
-    result.scrollIntoView({behavior:"smooth",block:"start"});
+
+    if (!currentStudent || !currentStudent.id) {
+      const warning = document.createElement("p");
+      warning.textContent =
+        "Nəticə hesablandı, amma yadda saxlanmadı. Əvvəlcə şagird kimi daxil ol.";
+      result.appendChild(warning);
+      submit.disabled = false;
+      result.scrollIntoView({ behavior: "smooth", block: "start" });
+      return;
+    }
+
+    const { error } = await supabaseClient
+      .from("es_test_results")
+      .insert({
+        student_id: currentStudent.id,
+        test_title: "İngilis dili sınaq testi",
+        score: score,
+        total: examQuestions.length,
+        answers: answers
+      });
+
+    const status = document.createElement("p");
+    status.textContent = error
+      ? "Nəticə yadda saxlanmadı: " + error.message
+      : "Nəticə uğurla yadda saxlanıldı!";
+
+    result.appendChild(status);
+    result.scrollIntoView({ behavior: "smooth", block: "start" });
   });
 
   area.appendChild(form);
   area.appendChild(result);
-  area.scrollIntoView({behavior:"smooth",block:"start"});
+  area.scrollIntoView({ behavior: "smooth", block: "start" });
 }
+
 
 async function addStudent() {
   const name = document.getElementById("newStudentName").value.trim();
