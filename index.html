@@ -99,7 +99,8 @@ a{color:var(--brown);overflow-wrap:anywhere}
   
 <hr>
 <h3>Şagirdlərin sınaq nəticələri</h3>
-<button onclick="loadTestResults()">Nəticələri yenilə</button>
+<button type="button" onclick="loadMyResults().catch(e => alert('Xəta: ' + e.message))">Nəticələrimi göstər</button>
+
 <div id="testResultsMessage" class="message"></div>
 <div id="testResultsList"></div>
 
