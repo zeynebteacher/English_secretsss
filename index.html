@@ -204,6 +204,58 @@ async function teacherLogout() {
 async function loadTestResults() {
   const list = document.getElementById("testResultsList");
   const status = document.getElementById("testResultsMessage");
+  
+async function loadMyResults() {
+  const messageBox = document.getElementById("myResultsMessage");
+  const list = document.getElementById("myResultsList");
+
+  list.innerHTML = "";
+  messageBox.textContent = "Nəticələr yüklənir...";
+
+  if (!currentStudent || !currentStudent.full_name || !currentStudent.student_code) {
+    messageBox.textContent = "Əvvəlcə şagird kimi daxil ol.";
+    return;
+  }
+
+  try {
+    const { data, error } = await supabaseClient.rpc(
+      "student_get_results",
+      {
+        p_name: currentStudent.full_name,
+        p_code: currentStudent.student_code
+      }
+    );
+
+    if (error) throw error;
+
+    if (!data || data.length === 0) {
+      messageBox.textContent = "Hələ yadda saxlanmış nəticən yoxdur.";
+      return;
+    }
+
+    data.forEach(item => {
+      const card = document.createElement("div");
+      card.className = "card";
+
+      const percent = item.total
+        ? Math.round(item.score / item.total * 100)
+        : 0;
+
+      card.textContent =
+        item.test_title +
+        " | Bal: " + item.score + "/" + item.total +
+        " | " + percent + "%" +
+        " | " + new Date(item.created_at).toLocaleString("az-AZ");
+
+      list.appendChild(card);
+    });
+
+    messageBox.textContent = "Tapılan nəticə sayı: " + data.length;
+  } catch (error) {
+    messageBox.textContent = "Xəta: " + error.message;
+  }
+}
+
 
   list.innerHTML = "";
   status.textContent = "Nəticələr yüklənir...";
