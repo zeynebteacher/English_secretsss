@@ -521,38 +521,29 @@ async function studentLogin() {
 
 // 30 SUALLIQ SINAQ
 const examQuestions = [
-{q:"I ___ a student.",o:["am","is","are","be"],a:0},
-{q:"She ___ my sister.",o:["am","are","is","be"],a:2},
-{q:"They ___ at school.",o:["is","am","are","be"],a:2},
-{q:"He ___ not a teacher.",o:["are","am","is","be"],a:2},
-{q:"We ___ happy.",o:["is","are","am","be"],a:1},
-{q:"___ you ready?",o:["Is","Am","Are","Be"],a:2},
-{q:"___ she your friend?",o:["Are","Is","Am","Be"],a:1},
-{q:"I have two ___.",o:["book","books","bookes","book's"],a:1},
-{q:"One child, two ___.",o:["childs","childes","children","childrens"],a:2},
-{q:"There ___ a pen on the desk.",o:["are","am","is","be"],a:2},
-{q:"There ___ three cats.",o:["is","are","am","be"],a:1},
-{q:"This is ___ apple.",o:["a","an","the","-"],a:1},
-{q:"He is ___ honest boy.",o:["a","an","the","-"],a:1},
-{q:"I have ___ orange.",o:["a","an","some","any"],a:1},
-{q:"The plural of 'box' is ___.",o:["boxs","boxes","boxies","box"],a:1},
-{q:"The plural of 'baby' is ___.",o:["babys","babyes","babies","baby"],a:2},
-{q:"My ___ are new.",o:["watch","watchs","watches","watchies"],a:2},
-{q:"A woman, two ___.",o:["womans","women","womanes","womens"],a:1},
-{q:"This is Ali. ___ is my friend.",o:["She","It","He","They"],a:2},
-{q:"These ___ my pencils.",o:["is","am","are","be"],a:2},
-{q:"That ___ an old house.",o:["are","is","am","be"],a:1},
-{q:"I ___ from Azerbaijan.",o:["is","are","am","be"],a:2},
-{q:"My parents ___ at home.",o:["is","am","are","be"],a:2},
-{q:"The opposite of 'young' is ___.",o:["small","old","short","new"],a:1},
-{q:"Which is a noun?",o:["quickly","beautiful","teacher","run"],a:2},
-{q:"Choose the correct phrase.",o:["a books","an university","three pens","two child"],a:2},
-{q:"The ___ toys are here.",o:["childs","children's","childrens","childrens'"],a:1},
-{q:"___ are my shoes over there.",o:["This","That","These","Those"],a:3},
-{q:"It ___ cold today.",o:["are","am","is","be"],a:2},
-{q:"Choose the correct sentence.",o:["She are happy.","They is here.","I am ready.","He am a boy."],a:2}
-];
 
+  { q: "12. This is _____ bag.", o: ["Mary", "Marys", "Mary's", "Mary is", "Marys'"], a: 2 },
+  { q: "13. Choose the correct sentence.", o: ["I amn't tired.", "I isn't tired.", "I aren't tired.", "I am not tired.", "I not am tired."], a: 3 },
+  { q: "14. _____ your parents at work?", o: ["Is", "Am", "Are", "Be", "Was"], a: 2 },
+  { q: "15. Which word is a common noun?", o: ["Azerbaijan", "Monday", "Nigar", "Caspian Sea", "river"], a: 4 },
+  { q: "16. Choose the uncountable noun.", o: ["notebook", "coin", "luggage", "egg", "orange"], a: 2 },
+  { q: "17. The _____ uniforms are blue.", o: ["boys", "boy's", "boys'", "boys's", "boy"], a: 2 },
+  { q: "18. Choose the correct sentence.", o: ["They is my classmates.", "They am my classmates.", "They be my classmates.", "They are my classmates.", "They was my classmates."], a: 3 },
+  { q: "19. Choose the abstract noun.", o: ["mountain", "love", "phone", "desk", "cat"], a: 1 },
+  { q: "20. We _____ late for school yesterday.", o: ["wasn't", "weren't", "isn't", "am not", "aren't"], a: 1 },
+  { q: "21. _____ I your new English teacher?", o: ["Is", "Are", "Am", "Be", "Were"], a: 2 },
+  { q: "22. Choose the correct negative form of: 'The students are in the classroom.'", o: ["The students not are in the classroom.", "The students isn't in the classroom.", "The students aren't in the classroom.", "The students doesn't in the classroom.", "The students am not in the classroom."], a: 2 },
+
+  // READING TEXT
+  { q: "Read the text and answer questions 23–30.\n\nA DAY AT THE SCHOOL LIBRARY\n\nLast Friday, Aylin and her friend Murad visited the school library. The library was quiet and comfortable. Aylin wanted to find a book about nature, while Murad was interested in history. The librarian, Mrs Brown, helped them choose suitable books.\n\nAylin found a book about flowers and trees. It contained useful information about different plants. She thought the book was interesting because the explanations were clear and simple. Murad chose a book about ancient cities. He said that learning about the past was important.\n\nBefore leaving, the students thanked Mrs Brown. They were happy because they had learned something new. They decided to visit the library again the following week.\n\n23. When did Aylin and Murad visit the library?", o: ["On Monday", "Last Friday", "On Sunday", "Last Tuesday", "On Saturday"], a: 1 },
+  { q: "24. What was Murad interested in?", o: ["Nature", "Music", "History", "Sport", "Art"], a: 2 },
+  { q: "25. Choose the correct definition of 'librarian'.", o: ["A person who teaches mathematics", "A person who works in a library", "A person who grows flowers", "A person who writes newspaper articles", "A person who builds houses"], a: 1 },
+  { q: "26. Choose the adjective used in the text to describe the library.", o: ["Ancient", "Difficult", "Comfortable", "Expensive", "Dangerous"], a: 2 },
+  { q: "27. Why did Aylin find the book interesting?", o: ["It had many pictures of animals.", "It was about ancient cities.", "The explanations were clear and simple.", "Murad recommended it.", "It was very short."], a: 2 },
+  { q: "28. True or False? Murad chose a book about plants.", o: ["True", "False"], a: 1 },
+  { q: "29. What did the students decide to do the following week?", o: ["Visit the library again", "Visit a museum", "Buy new uniforms", "Study mathematics", "Go to the park"], a: 0 },
+  { q: "30. Choose the word closest in meaning to 'important' as used in the text.", o: ["Necessary", "Noisy", "Empty", "Weak", "Cheap"], a: 0 }
+];
 
 async function startExam() {
   const area = document.getElementById("examArea");
