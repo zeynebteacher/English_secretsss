@@ -521,15 +521,33 @@ async function startExam() {
       return;
     }
 
-    const { error } = await supabaseClient
-      .from("es_test_results")
-      .insert({
-        student_id: currentStudent.id,
-        test_title: "İngilis dili sınaq testi",
-        score: score,
-        total: examQuestions.length,
-        answers: answers
-      });
+    
+try {
+  const { data, error } = await supabaseClient
+    .from("es_test_results")
+    .insert({
+      student_id: currentStudent.id,
+      test_title: "İngilis dili sınaq testi",
+      score: score,
+      total: examQuestions.length,
+      answers: answers
+    })
+    .select();
+
+  const status = document.createElement("p");
+  status.textContent = error
+    ? "XƏTA: " + error.message
+    : "Nəticə uğurla yadda saxlanıldı!";
+  result.appendChild(status);
+} catch (err) {
+  const status = document.createElement("p");
+  status.textContent = "XƏTA: " + err.message;
+  result.appendChild(status);
+}
+
+submit.disabled = false;
+result.scrollIntoView({ behavior: "smooth", block: "start" });
+
 
     const status = document.createElement("p");
     status.textContent = error
