@@ -52,6 +52,14 @@
 <section id="teacherSection" class="hidden">
 <div class="card"><div class="grid"><div><h2>Teacher panel</h2><p id="teacherEmailDisplay" class="muted"></p></div><div style="text-align:right"><button class="secondary" onclick="logout()">Log out</button></div></div></div>
 <div class="card">
+<h3>Şagird əlavə et</h3>
+<p class="muted">Şagirdin adını və soyadını yaz, sonra düyməyə bas. Sistem giriş kodu yaradacaq.</p>
+<label for="newStudentName">Şagirdin adı və soyadı</label>
+<input id="newStudentName" autocomplete="off" placeholder="Məsələn, Aysel Məmmədova">
+<button id="addStudentBtn" onclick="createStudent()">+ Şagird əlavə et</button>
+<div id="createStudentMessage" class="message hidden" role="status" aria-live="polite"></div>
+</div>
+<div class="card">
 <h3>Şagirdlərim</h3>
 <p class="muted">Supabase-də saxlanılan şagird siyahısı.</p>
 <button onclick="loadTeacherStudents()">Şagird siyahısını yenilə</button>
@@ -118,6 +126,36 @@ async function loadStudentMaterials(){const box=document.getElementById('student
 async function loadPracticeTestStatus(){const box=document.getElementById('practiceTestStatusInfo');box.textContent='Loading status...';try{const title=document.getElementById('practiceTestTitle').value.trim()||TEST_TITLE;const {data,error}=await supabaseClient.from('practice_tests').select('id,title,status,updated_at').eq('title',title).order('updated_at',{ascending:false}).limit(1);if(error)throw error;if(!data||!data.length){box.textContent='No status record yet. Choose a status and press “Save status” to create it.';return}const row=data[0];document.getElementById('practiceTestStatus').value=['draft','active','inactive'].includes(row.status)?row.status:'draft';box.textContent='Current status: '+({draft:'Draft — Qaralama',active:'Aktiv',inactive:'Deaktiv'}[row.status]||row.status)+' · Updated: '+(row.updated_at?new Date(row.updated_at).toLocaleString('az-AZ'):'—');}catch(e){box.textContent='Status could not be loaded: '+(e.message||String(e))+'. Check that the practice_tests table exists and the teacher has permission.'}}
 async function savePracticeTestStatus(){const title=document.getElementById('practiceTestTitle').value.trim();const status=document.getElementById('practiceTestStatus').value;hideMessage('practiceTestMessage');if(!title){showMessage('practiceTestMessage','Enter a test title.');return}try{const {data:found,error:findError}=await supabaseClient.from('practice_tests').select('id').eq('title',title).order('updated_at',{ascending:false}).limit(1);if(findError)throw findError;let result;if(found&&found.length){result=await supabaseClient.from('practice_tests').update({status,updated_at:new Date().toISOString()}).eq('id',found[0].id).select('id,title,status').single()}else{result=await supabaseClient.from('practice_tests').insert({title,status,updated_at:new Date().toISOString()}).select('id,title,status').single()}if(result.error)throw result.error;showMessage('practiceTestMessage','Status saved: '+({draft:'Draft — Qaralama',active:'Aktiv',inactive:'Deaktiv'}[status]||status));await loadPracticeTestStatus();await loadActivePracticeTest();}catch(e){showMessage('practiceTestMessage','Status saxlanmadı: '+(e.message||String(e))+'. Supabase-də practice_tests cədvəli və müəllim üçün INSERT/UPDATE/SELECT icazələri yoxlanmalıdır.')}}
 function safeText(value){return value===null||value===undefined||value===''?'—':String(value)}
+async function createStudent(){
+ const input=document.getElementById('newStudentName');
+ const btn=document.getElementById('addStudentBtn');
+ const name=input.value.trim();
+ hideMessage('createStudentMessage');
+ if(!name){showMessage('createStudentMessage','Zəhmət olmasa şagirdin adını və soyadını yaz.');input.focus();return;}
+ btn.disabled=true;btn.textContent='Əlavə olunur...';
+ try{
+  const {data,error}=await supabaseClient.rpc('teacher_create_student',{p_full_name:name});
+  if(error)throw error;
+  let student=data;
+  if(Array.isArray(student))student=student[0];
+  if(typeof student==='string'){
+   try{student=JSON.parse(student)}catch(_){student={message:student}}
+  }
+  student=student||{};
+  const code=student.student_code||student.code||student.access_code||student.p_code||student.generated_code||'';
+  const savedName=student.full_name||student.student_name||student.name||name;
+  if(!code){
+   showMessage('createStudentMessage','Cavab alındı, amma giriş kodu cavabda görünmür. Şagird siyahısını yenilə və ya teacher_create_student funksiyasının qaytardığı sahələri yoxla.');
+   await loadTeacherStudents();
+   return;
+  }
+  showMessage('createStudentMessage','Şagird əlavə olundu: '+savedName+' | Giriş kodu: '+code+' — bu kodu şagirdə göndər.');
+  input.value='';
+  await loadTeacherStudents();
+ }catch(e){showMessage('createStudentMessage','Şagird əlavə edilmədi: '+(e.message||String(e))+'. Müəllim hesabına daxil olduğuna və teacher_create_student RPC icazəsinə əmin ol.');}
+ finally{btn.disabled=false;btn.textContent='+ Şagird əlavə et';}
+}
+
 async function loadTeacherStudents(){
  const box=document.getElementById('teacherStudents');const msg='teacherStudentsMessage';hideMessage(msg);box.textContent='Loading...';
  try{
@@ -154,4 +192,4 @@ async function uploadMaterial(){hideMessage('materialMessage');const title=docum
 async function loadTeacherMaterials(){const box=document.getElementById('teacherMaterials');box.textContent='Loading...';try{const {data,error}=await supabaseClient.from('english_materials').select('created_at,Title,Content,Grade,Topic').order('created_at',{ascending:false});if(error)throw error;if(!data||!data.length){box.textContent='No materials saved yet.';return}box.innerHTML='';data.forEach(m=>{const div=document.createElement('div');div.className='item';const strong=document.createElement('strong');strong.textContent=m.Title||'Material';div.appendChild(strong);const meta=document.createElement('div');meta.className='small';meta.textContent='Grade '+(m.Grade||'—')+' · '+(m.Topic||'');div.appendChild(meta);if(m.Content){const a=document.createElement('a');a.href=m.Content;a.target='_blank';a.rel='noopener noreferrer';a.textContent='Open file';a.style.color='var(--accent)';div.appendChild(a)}box.appendChild(div)})}catch(e){box.textContent='Could not load materials: '+(e.message||String(e))}}
 </script>
 </body>
- </html>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  </html>
