@@ -790,6 +790,7 @@ async function submitCustomTest(){
   showMessage('customTestMessage','Nəticə hesablandı, amma yadda saxlanmadı: '+(e.message||String(e))+'. Supabase cədvəl icazələrini yoxla.');
  }
 }
+ 
 
 async function loadMonthlyRanking(){
  const box=document.getElementById('monthlyRanking');if(!box)return;
@@ -826,6 +827,17 @@ async function loadMonthlyRanking(){
    box.prepend(winner);
   }
  }catch(e){box.textContent='Aylıq reytinq yüklənmədi: '+(e.message||String(e))}
+}
+  function safeHtmlText(value) {
+  return String(value ?? '').replace(/[&<>"']/g, function (char) {
+    return {
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#39;'
+    }[char];
+  });
 }
 
 async function uploadMaterial(){
