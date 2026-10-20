@@ -6,6 +6,29 @@
 <title>English Secretss</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
+ 
+.confetti-piece{
+  position:fixed;
+  top:-15px;
+  width:9px;
+  height:14px;
+  z-index:9999;
+  pointer-events:none;
+  animation:confettiFall 3s ease-in forwards;
+}
+@keyframes confettiFall{
+  to{transform:translateY(110vh) rotate(900deg);opacity:0}
+}
+.celebration{
+  padding:18px;
+  margin:14px 0;
+  border:2px solid #d5b16d;
+  border-radius:14px;
+  background:#fff3d7;
+  text-align:center;
+  color:#79552d;
+}
+
 :root{--bg:#f7f0e6;--card:#fffaf3;--ink:#49382d;--muted:#806d5d;--accent:#8b6248;--line:#e5d5c4;--good:#28734b;--bad:#a33b35}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:Arial,sans-serif;line-height:1.5}
@@ -838,6 +861,20 @@ async function loadMonthlyRanking(){
       "'": '&#39;'
     }[char];
   });
+}
+
+function launchConfetti(){
+  const colors=['#d5a33b','#c96b76','#7ca889','#8b78b8','#e89a45'];
+  for(let i=0;i<80;i++){
+    const piece=document.createElement('div');
+    piece.className='confetti-piece';
+    piece.style.left=Math.random()*100+'vw';
+    piece.style.background=colors[i%colors.length];
+    piece.style.animationDelay=Math.random()*1.5+'s';
+    piece.style.animationDuration=(2+Math.random()*2)+'s';
+    document.body.appendChild(piece);
+    setTimeout(()=>piece.remove(),5000);
+  }
 }
 
 async function uploadMaterial(){
