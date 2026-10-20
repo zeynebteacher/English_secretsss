@@ -7,58 +7,297 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root{--bg:#f7f0e6;--card:#fffaf3;--ink:#49382d;--muted:#806d5d;--accent:#8b6248;--line:#e5d5c4;--good:#28734b;--bad:#a33b35}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Arial,sans-serif;line-height:1.5}header{padding:24px 16px;text-align:center;background:#ead9c6;border-bottom:1px solid var(--line)}header h1{margin:0;font-size:28px}header p{margin:5px 0 0;color:var(--muted)}main{max-width:900px;margin:22px auto;padding:0 14px 40px}.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;margin:14px 0;box-shadow:0 3px 12px #4a35200a}h2,h3{margin-top:0}label{display:block;font-weight:600;margin:12px 0 5px}input,select,textarea{width:100%;padding:11px;border:1px solid #d8c5b2;border-radius:9px;background:white;color:var(--ink);font:inherit}button{border:0;border-radius:9px;padding:11px 16px;background:var(--accent);color:white;font-weight:700;font:inherit;cursor:pointer;margin:7px 5px 0 0}button.secondary{background:#e8d8c7;color:var(--ink)}button:disabled{opacity:.5;cursor:not-allowed}.hidden{display:none!important}.message{padding:10px 12px;border-radius:9px;margin-top:10px;background:#f0e4d6}.question{padding:14px 0;border-bottom:1px solid var(--line)}.question:last-child{border-bottom:0}.question p{margin:0 0 9px;font-weight:600}.option{display:flex;align-items:flex-start;gap:9px;font-weight:400;margin:7px 0}.option input{width:auto;margin-top:5px}.pill{display:inline-block;background:#ead9c6;padding:4px 9px;border-radius:20px;font-size:13px;margin-right:5px}.muted{color:var(--muted)}.reading{white-space:normal;line-height:1.8}.item{padding:10px 0;border-bottom:1px solid var(--line);overflow-wrap:anywhere}.score{font-size:24px;font-weight:700}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}.small{font-size:13px;color:var(--muted)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Arial,sans-serif;line-height:1.5}
+header{padding:24px 16px;text-align:center;background:#ead9c6;border-bottom:1px solid var(--line)}
+header h1{margin:0;font-size:28px}
+header p{margin:5px 0 0;color:var(--muted)}
+main{max-width:900px;margin:22px auto;padding:0 14px 40px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;margin:14px 0;box-shadow:0 3px 12px #4a35200a}
+h2,h3{margin-top:0}
+label{display:block;font-weight:600;margin:12px 0 5px}
+input,select,textarea{width:100%;padding:11px;border:1px solid #d8c5b2;border-radius:9px;background:white;color:var(--ink);font:inherit}
+button{border:0;border-radius:9px;padding:11px 16px;background:var(--accent);color:white;font-weight:700;font:inherit;cursor:pointer;margin:7px 5px 0 0}
+button.secondary{background:#e8d8c7;color:var(--ink)}
+button:disabled{opacity:.5;cursor:not-allowed}
+.hidden{display:none!important}
+.message{padding:10px 12px;border-radius:9px;margin-top:10px;background:#f0e4d6}
+.question{padding:14px 0;border-bottom:1px solid var(--line)}
+.question:last-child{border-bottom:0}
+.question p{margin:0 0 9px;font-weight:600}
+.option{display:flex;align-items:flex-start;gap:9px;font-weight:400;margin:7px 0}
+.option input{width:auto;margin-top:5px}
+.pill{display:inline-block;background:#ead9c6;padding:4px 9px;border-radius:20px;font-size:13px;margin-right:5px}
+.muted{color:var(--muted)}
+.reading{white-space:normal;line-height:1.8}
+.item{padding:10px 0;border-bottom:1px solid var(--line);overflow-wrap:anywhere}
+.score{font-size:24px;font-weight:700}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.small{font-size:13px;color:var(--muted)}
+@keyframes confettiPop{0%{transform:scale(.95) rotate(-3deg)}100%{transform:scale(1.08) rotate(3deg)}}
 </style>
 </head>
 <body>
-<header><h1>English Secretss</h1><p>Learn • Practise • Improve</p></header>
+<header>
+<h1>English Secretss</h1>
+<p>Learn • Practise • Improve</p>
+</header>
 <main>
+
 <section id="loginSection" class="card">
-<h2>Student Login</h2><p class="muted">Enter the access code given by your teacher.</p>
-<label for="studentCode">Student access code</label><input id="studentCode" autocomplete="off" placeholder="Enter your code">
+<h2>Student Login</h2>
+<p class="muted">Enter the access code given by your teacher.</p>
+<label for="studentCode">Student access code</label>
+<input id="studentCode" autocomplete="off" placeholder="Enter your code">
 <button id="studentLoginBtn" onclick="studentLogin()">Log in as student</button>
 <hr style="border:0;border-top:1px solid var(--line);margin:22px 0">
 <h3>Teacher Login</h3>
-<label for="teacherEmail">Email</label><input id="teacherEmail" type="email" autocomplete="username" placeholder="Teacher email">
-<label for="teacherPassword">Password</label><input id="teacherPassword" type="password" autocomplete="current-password" placeholder="Password">
+<label for="teacherEmail">Email</label>
+<input id="teacherEmail" type="email" autocomplete="username" placeholder="Teacher email">
+<label for="teacherPassword">Password</label>
+<input id="teacherPassword" type="password" autocomplete="current-password" placeholder="Password">
 <button onclick="teacherLogin()">Log in as teacher</button>
 <div id="loginMessage" class="message hidden" role="status"></div>
 </section>
+
 <section id="studentSection" class="hidden">
-<div class="card"><div class="grid"><div><h2 id="studentWelcome">Student cabinet</h2><p class="muted">Your assigned activities and results appear here.</p></div><div style="text-align:right"><button class="secondary" onclick="logout()">Log out</button></div></div></div>
-<div id="assignedTestCard" class="card hidden"><span class="pill">30 questions</span><span class="pill">100 points</span><h2>Grade 9 Practice Test — Reading, Nouns &amp; To be</h2><p>Reading comprehension and grammar practice for Grade 9 exam preparation.</p><button onclick="startTest()">Start test</button></div>
-<div id="notAssigned" class="card hidden"><h3>No active test assigned</h3><p class="muted">Please contact your teacher if you think a test should be available.</p></div>
-<div class="card"><h3>My results</h3><div id="studentResults" class="muted">No results loaded.</div></div>
-<div class="card"><h3>Learning materials</h3><div id="studentMaterials" class="muted">No materials loaded.</div></div>
+<div class="card">
+<div class="grid">
+<div>
+<h2 id="studentWelcome">Student cabinet</h2>
+<p class="muted">Your assigned activities and results appear here.</p>
+</div>
+<div style="text-align:right">
+<button class="secondary" onclick="logout()">Log out</button>
+</div>
+</div>
+</div>
+
+<div class="card">
+<h3>Yeni aktiv sınaqlar</h3>
+<p class="muted">Müəllimin əlavə etdiyi sınaqlar burada görünəcək.</p>
+<div id="customStudentTests">Aktiv sınaqlar yüklənir...</div>
+</div>
+
+<div id="assignedTestCard" class="card hidden">
+<span class="pill">30 questions</span>
+<span class="pill">100 points</span>
+<h2>Grade 9 Practice Test — Reading, Nouns &amp; To be</h2>
+<p>Reading comprehension and grammar practice for Grade 9 exam preparation.</p>
+<button onclick="startTest()">Start test</button>
+</div>
+
+<div id="notAssigned" class="card hidden">
+<h3>No active test assigned</h3>
+<p class="muted">Please contact your teacher if you think a test should be available.</p>
+</div>
+
+<div class="card">
+<h3>My results</h3>
+<div id="studentResults" class="muted">No results loaded.</div>
+</div>
+
+<div class="card">
+<h3>Learning materials</h3>
+<div id="studentMaterials" class="muted">No materials loaded.</div>
+</div>
 </section>
+
 <section id="testSection" class="hidden">
-<div class="card"><button class="secondary" onclick="backToCabinet()">← Back to cabinet</button><h2>Grade 9 Practice Test — Reading, Nouns &amp; To be</h2><p><span class="pill">30 questions</span><span class="pill">100 points</span></p><p class="muted">Choose or type an answer for every question, then submit.</p></div>
+<div class="card">
+<button class="secondary" onclick="backToCabinet()">← Back to cabinet</button>
+<h2>Grade 9 Practice Test — Reading, Nouns &amp; To be</h2>
+<p><span class="pill">30 questions</span><span class="pill">100 points</span></p>
+<p class="muted">Choose or type an answer for every question, then submit.</p>
+</div>
+
 <form id="testForm" class="card" onsubmit="submitTest(event)">
 <h3>Part I — Reading</h3>
 <p class="muted">Questions 1–8: Read the text and answer the questions.</p>
-<div class="reading"><h3>A Day at the School Garden</h3>
+
+<div class="reading">
+<h3>A Day at the School Garden</h3>
 <p>On Saturday morning, Emma and her classmates visited their school garden. Their science teacher, Mr Green, was with them. The weather was sunny, but the air was cool.</p>
 <p>The students planted ten small trees and watered the flowers. Emma's favourite plant was a red rose because it had a pleasant smell. Her friend Daniel collected dry leaves and put them into a large box to make compost.</p>
 <p>At noon, the students had sandwiches and drank water under a big tree. They were tired, but they were proud of their work. Mr Green told them that trees provide shade and help keep the air clean. The students decided to visit the garden every month.</p>
-<p>Before leaving, Emma found a small bird near the fence. It was unable to fly, so the teacher called a local animal rescue centre. The students waited until a rescue worker arrived. They were happy because they had helped both the garden and the bird.</p></div>
-<div class="question"><p>1. What is the text mainly about?</p><label class="option"><input type="radio" name="q1" value="A"> A) A family holiday in the countryside</label><label class="option"><input type="radio" name="q1" value="B"> B) Students helping in a school garden</label><label class="option"><input type="radio" name="q1" value="C"> C) A science exam at school</label><label class="option"><input type="radio" name="q1" value="D"> D) A bird living in a tree</label></div><div class="question"><p>2. Complete the sentence according to the text: Daniel collected dry leaves to ___.</p><label class="option"><input type="radio" name="q2" value="A"> A) feed the birds</label><label class="option"><input type="radio" name="q2" value="B"> B) make compost</label><label class="option"><input type="radio" name="q2" value="C"> C) decorate the classroom</label><label class="option"><input type="radio" name="q2" value="D"> D) plant roses</label></div><div class="question"><p>3. Which statement is TRUE according to the text?</p><label class="option"><input type="radio" name="q3" value="A"> A) The students planted twenty trees.</label><label class="option"><input type="radio" name="q3" value="B"> B) Emma's favourite plant was a red rose.</label><label class="option"><input type="radio" name="q3" value="C"> C) The students visited the garden on Sunday.</label><label class="option"><input type="radio" name="q3" value="D"> D) The weather was rainy.</label></div><div class="question"><p>4. Which information is NOT mentioned in the text?</p><label class="option"><input type="radio" name="q4" value="A"> A) The students planted trees.</label><label class="option"><input type="radio" name="q4" value="B"> B) They had sandwiches at noon.</label><label class="option"><input type="radio" name="q4" value="C"> C) Emma found a small bird.</label><label class="option"><input type="radio" name="q4" value="D"> D) The students' school was built ten years ago.</label></div><div class="question"><p>5. Complete the sentence according to the text: The students decided to visit the garden ___.</p><input name="q5" autocomplete="off" placeholder="Your answer"></div><div class="question"><p>6. Find the word in the text that matches the following definition: <em>Giving pleasure or satisfaction; enjoyable.</em></p><input name="q6" autocomplete="off" placeholder="Your answer"></div><div class="question"><p>7. What adjective is used before the noun <em>rose</em> in the text?</p><input name="q7" autocomplete="off" placeholder="Your answer"></div><div class="question"><p>8. Why did the teacher call a local animal rescue centre?</p><textarea name="q8" rows="2" placeholder="Write your answer in English"></textarea></div>
+<p>Before leaving, Emma found a small bird near the fence. It was unable to fly, so the teacher called a local animal rescue centre. The students waited until a rescue worker arrived. They were happy because they had helped both the garden and the bird.</p>
+</div><div class="question"><p>1. What is the text mainly about?</p>
+<label class="option"><input type="radio" name="q1" value="A"> A) A family holiday in the countryside</label>
+<label class="option"><input type="radio" name="q1" value="B"> B) Students helping in a school garden</label>
+<label class="option"><input type="radio" name="q1" value="C"> C) A science exam at school</label>
+<label class="option"><input type="radio" name="q1" value="D"> D) A bird living in a tree</label></div>
+
+<div class="question"><p>2. Complete the sentence according to the text: Daniel collected dry leaves to ___.</p>
+<label class="option"><input type="radio" name="q2" value="A"> A) feed the birds</label>
+<label class="option"><input type="radio" name="q2" value="B"> B) make compost</label>
+<label class="option"><input type="radio" name="q2" value="C"> C) decorate the classroom</label>
+<label class="option"><input type="radio" name="q2" value="D"> D) plant roses</label></div>
+
+<div class="question"><p>3. Which statement is TRUE according to the text?</p>
+<label class="option"><input type="radio" name="q3" value="A"> A) The students planted twenty trees.</label>
+<label class="option"><input type="radio" name="q3" value="B"> B) Emma's favourite plant was a red rose.</label>
+<label class="option"><input type="radio" name="q3" value="C"> C) The students visited the garden on Sunday.</label>
+<label class="option"><input type="radio" name="q3" value="D"> D) The weather was rainy.</label></div>
+
+<div class="question"><p>4. Which information is NOT mentioned in the text?</p>
+<label class="option"><input type="radio" name="q4" value="A"> A) The students planted trees.</label>
+<label class="option"><input type="radio" name="q4" value="B"> B) They had sandwiches at noon.</label>
+<label class="option"><input type="radio" name="q4" value="C"> C) Emma found a small bird.</label>
+<label class="option"><input type="radio" name="q4" value="D"> D) The students' school was built ten years ago.</label></div>
+
+<div class="question"><p>5. Complete the sentence according to the text: The students decided to visit the garden ___.</p>
+<input name="q5" autocomplete="off" placeholder="Your answer"></div>
+
+<div class="question"><p>6. Find the word in the text that matches the definition: Giving pleasure or satisfaction; enjoyable.</p>
+<input name="q6" autocomplete="off" placeholder="Your answer"></div>
+
+<div class="question"><p>7. What adjective is used before the noun <em>rose</em> in the text?</p>
+<input name="q7" autocomplete="off" placeholder="Your answer"></div>
+
+<div class="question"><p>8. Why did the teacher call a local animal rescue centre?</p>
+<textarea name="q8" rows="2" placeholder="Write your answer in English"></textarea></div>
+
 <h3 style="margin-top:28px">Part II — Grammar</h3>
 <p class="muted">Questions 9–20: Choose the correct answer. Questions 21–30: Complete the sentences or write the required form.</p>
-<div class="question"><p>9. There are three ___ in the garden.</p><label class="option"><input type="radio" name="q9" value="A"> A) child</label><label class="option"><input type="radio" name="q9" value="B"> B) childs</label><label class="option"><input type="radio" name="q9" value="C"> C) children</label><label class="option"><input type="radio" name="q9" value="D"> D) childrens</label></div><div class="question"><p>10. My brother ___ a student, but my sisters ___ teachers.</p><label class="option"><input type="radio" name="q10" value="A"> A) am / is</label><label class="option"><input type="radio" name="q10" value="B"> B) is / are</label><label class="option"><input type="radio" name="q10" value="C"> C) are / am</label><label class="option"><input type="radio" name="q10" value="D"> D) is / is</label></div><div class="question"><p>11. Which noun has an irregular plural form?</p><label class="option"><input type="radio" name="q11" value="A"> A) book</label><label class="option"><input type="radio" name="q11" value="B"> B) chair</label><label class="option"><input type="radio" name="q11" value="C"> C) tooth</label><label class="option"><input type="radio" name="q11" value="D"> D) pencil</label></div><div class="question"><p>12. This is ___ bag. It belongs to my mother.</p><label class="option"><input type="radio" name="q12" value="A"> A) my mothers</label><label class="option"><input type="radio" name="q12" value="B"> B) my mother's</label><label class="option"><input type="radio" name="q12" value="C"> C) my mothers'</label><label class="option"><input type="radio" name="q12" value="D"> D) mother</label></div><div class="question"><p>13. There ___ some milk in the glass.</p><label class="option"><input type="radio" name="q13" value="A"> A) are</label><label class="option"><input type="radio" name="q13" value="B"> B) am</label><label class="option"><input type="radio" name="q13" value="C"> C) is</label><label class="option"><input type="radio" name="q13" value="D"> D) be</label></div><div class="question"><p>14. Choose the correct plural form of <em>woman</em>.</p><label class="option"><input type="radio" name="q14" value="A"> A) womans</label><label class="option"><input type="radio" name="q14" value="B"> B) women</label><label class="option"><input type="radio" name="q14" value="C"> C) womens</label><label class="option"><input type="radio" name="q14" value="D"> D) womanes</label></div><div class="question"><p>15. The ___ room is very clean. The room belongs to the boys.</p><label class="option"><input type="radio" name="q15" value="A"> A) boy's</label><label class="option"><input type="radio" name="q15" value="B"> B) boys</label><label class="option"><input type="radio" name="q15" value="C"> C) boys'</label><label class="option"><input type="radio" name="q15" value="D"> D) boy</label></div><div class="question"><p>16. Which sentence is correct?</p><label class="option"><input type="radio" name="q16" value="A"> A) These man are doctors.</label><label class="option"><input type="radio" name="q16" value="B"> B) This men are doctors.</label><label class="option"><input type="radio" name="q16" value="C"> C) These men are doctors.</label><label class="option"><input type="radio" name="q16" value="D"> D) These mens are doctors.</label></div><div class="question"><p>17. I ___ at school yesterday, but my friends ___ at home.</p><label class="option"><input type="radio" name="q17" value="A"> A) was / were</label><label class="option"><input type="radio" name="q17" value="B"> B) were / was</label><label class="option"><input type="radio" name="q17" value="C"> C) am / are</label><label class="option"><input type="radio" name="q17" value="D"> D) was / was</label></div><div class="question"><p>18. Choose the correct sentence.</p><label class="option"><input type="radio" name="q18" value="A"> A) The childrens' toys are new.</label><label class="option"><input type="radio" name="q18" value="B"> B) The children's toys are new.</label><label class="option"><input type="radio" name="q18" value="C"> C) The childrens toys are new.</label><label class="option"><input type="radio" name="q18" value="D"> D) The childrens's toys are new.</label></div><div class="question"><p>19. There ___ two knives and a spoon on the table.</p><label class="option"><input type="radio" name="q19" value="A"> A) is</label><label class="option"><input type="radio" name="q19" value="B"> B) am</label><label class="option"><input type="radio" name="q19" value="C"> C) are</label><label class="option"><input type="radio" name="q19" value="D"> D) was</label></div><div class="question"><p>20. Which noun has the correct possessive form?</p><label class="option"><input type="radio" name="q20" value="A"> A) the womans' bags</label><label class="option"><input type="radio" name="q20" value="B"> B) the women's bags</label><label class="option"><input type="radio" name="q20" value="C"> C) the womens bags</label><label class="option"><input type="radio" name="q20" value="D"> D) the womens's bags</label></div><div class="question"><p>21. Complete the sentence with the correct form of <em>to be</em>: I ___ very happy today.</p><input name="q21" autocomplete="off" placeholder="Your answer"></div><div class="question"><p>22. Complete the sentence with the correct form of <em>to be</em>: They ___ not at home last night.</p><input name="q22" autocomplete="off" placeholder="Your answer"></div><div class="question"><p>23. Write the plural form of <em>foot</em>.</p><input name="q23" autocomplete="off" placeholder="Your answer"></div><div class="question"><p>24. Write the plural form of <em>mouse</em>.</p><input name="q24" autocomplete="off" placeholder="Your answer"></div><div class="question"><p>25. Write the plural form of <em>leaf</em>.</p><input name="q25" autocomplete="off" placeholder="Your answer"></div><div class="question"><p>26. Write the plural form of <em>person</em>.</p><input name="q26" autocomplete="off" placeholder="Your answer"></div><div class="question"><p>27. Write the possessive form of <em>the bag of the girl</em>.</p><input name="q27" autocomplete="off" placeholder="Your answer"></div><div class="question"><p>28. Find the word in the text that means: <em>a place or thing that protects someone from direct sunlight.</em></p><input name="q28" autocomplete="off" placeholder="Your answer"></div><div class="question"><p>29. Complete the sentence with the correct forms of <em>to be</em>: My parents ___ doctors, and my father ___ 45 years old.</p><input name="q29" autocomplete="off" placeholder="Your answer"></div><div class="question"><p>30. Write the possessive form of <em>the house of Mr Brown</em>.</p><input name="q30" autocomplete="off" placeholder="Your answer"></div>
-<button type="submit" id="submitTestBtn">Submit test</button><div id="testMessage" class="message hidden" role="status"></div>
+
+<div class="question"><p>9. There are three ___ in the garden.</p>
+<label class="option"><input type="radio" name="q9" value="A"> A) child</label>
+<label class="option"><input type="radio" name="q9" value="B"> B) childs</label>
+<label class="option"><input type="radio" name="q9" value="C"> C) children</label>
+<label class="option"><input type="radio" name="q9" value="D"> D) childrens</label></div>
+
+<div class="question"><p>10. My brother ___ a student, but my sisters ___ teachers.</p>
+<label class="option"><input type="radio" name="q10" value="A"> A) am / is</label>
+<label class="option"><input type="radio" name="q10" value="B"> B) is / are</label>
+<label class="option"><input type="radio" name="q10" value="C"> C) are / am</label>
+<label class="option"><input type="radio" name="q10" value="D"> D) is / is</label></div>
+
+<div class="question"><p>11. Which noun has an irregular plural form?</p>
+<label class="option"><input type="radio" name="q11" value="A"> A) book</label>
+<label class="option"><input type="radio" name="q11" value="B"> B) chair</label>
+<label class="option"><input type="radio" name="q11" value="C"> C) tooth</label>
+<label class="option"><input type="radio" name="q11" value="D"> D) pencil</label></div>
+
+<div class="question"><p>12. This is ___ bag. It belongs to my mother.</p>
+<label class="option"><input type="radio" name="q12" value="A"> A) my mothers</label>
+<label class="option"><input type="radio" name="q12" value="B"> B) my mother's</label>
+<label class="option"><input type="radio" name="q12" value="C"> C) my mothers'</label>
+<label class="option"><input type="radio" name="q12" value="D"> D) mother</label></div>
+
+<div class="question"><p>13. There ___ some milk in the glass.</p>
+<label class="option"><input type="radio" name="q13" value="A"> A) are</label>
+<label class="option"><input type="radio" name="q13" value="B"> B) am</label>
+<label class="option"><input type="radio" name="q13" value="C"> C) is</label>
+<label class="option"><input type="radio" name="q13" value="D"> D) be</label></div>
+
+<div class="question"><p>14. Choose the correct plural form of <em>woman</em>.</p>
+<label class="option"><input type="radio" name="q14" value="A"> A) womans</label>
+<label class="option"><input type="radio" name="q14" value="B"> B) women</label>
+<label class="option"><input type="radio" name="q14" value="C"> C) womens</label>
+<label class="option"><input type="radio" name="q14" value="D"> D) womanes</label></div>
+
+<div class="question"><p>15. The ___ room is very clean. The room belongs to the boys.</p>
+<label class="option"><input type="radio" name="q15" value="A"> A) boy's</label>
+<label class="option"><input type="radio" name="q15" value="B"> B) boys</label>
+<label class="option"><input type="radio" name="q15" value="C"> C) boys'</label>
+<label class="option"><input type="radio" name="q15" value="D"> D) boy</label></div>
+
+<div class="question"><p>16. Which sentence is correct?</p>
+<label class="option"><input type="radio" name="q16" value="A"> A) These man are doctors.</label>
+<label class="option"><input type="radio" name="q16" value="B"> B) This men are doctors.</label>
+<label class="option"><input type="radio" name="q16" value="C"> C) These men are doctors.</label>
+<label class="option"><input type="radio" name="q16" value="D"> D) These mens are doctors.</label></div>
+
+<div class="question"><p>17. I ___ at school yesterday, but my friends ___ at home.</p>
+<label class="option"><input type="radio" name="q17" value="A"> A) was / were</label>
+<label class="option"><input type="radio" name="q17" value="B"> B) were / was</label>
+<label class="option"><input type="radio" name="q17" value="C"> C) am / are</label>
+<label class="option"><input type="radio" name="q17" value="D"> D) was / was</label></div>
+
+<div class="question"><p>18. Choose the correct sentence.</p>
+<label class="option"><input type="radio" name="q18" value="A"> A) The childrens' toys are new.</label>
+<label class="option"><input type="radio" name="q18" value="B"> B) The children's toys are new.</label>
+<label class="option"><input type="radio" name="q18" value="C"> C) The childrens toys are new.</label>
+<label class="option"><input type="radio" name="q18" value="D"> D) The childrens's toys are new.</label></div>
+
+<div class="question"><p>19. There ___ two knives and a spoon on the table.</p>
+<label class="option"><input type="radio" name="q19" value="A"> A) is</label>
+<label class="option"><input type="radio" name="q19" value="B"> B) am</label>
+<label class="option"><input type="radio" name="q19" value="C"> C) are</label>
+<label class="option"><input type="radio" name="q19" value="D"> D) was</label></div>
+
+<div class="question"><p>20. Which noun has the correct possessive form?</p>
+<label class="option"><input type="radio" name="q20" value="A"> A) the womans' bags</label>
+<label class="option"><input type="radio" name="q20" value="B"> B) the women's bags</label>
+<label class="option"><input type="radio" name="q20" value="C"> C) the womens bags</label>
+<label class="option"><input type="radio" name="q20" value="D"> D) the womens's bags</label></div>
+
+<div class="question"><p>21. Complete the sentence with the correct form of <em>to be</em>: I ___ very happy today.</p>
+<input name="q21" autocomplete="off" placeholder="Your answer"></div>
+
+<div class="question"><p>22. Complete the sentence with the correct form of <em>to be</em>: They ___ not at home last night.</p>
+<input name="q22" autocomplete="off" placeholder="Your answer"></div>
+
+<div class="question"><p>23. Write the plural form of <em>foot</em>.</p>
+<input name="q23" autocomplete="off" placeholder="Your answer"></div>
+
+<div class="question"><p>24. Write the plural form of <em>mouse</em>.</p>
+<input name="q24" autocomplete="off" placeholder="Your answer"></div>
+
+<div class="question"><p>25. Write the plural form of <em>leaf</em>.</p>
+<input name="q25" autocomplete="off" placeholder="Your answer"></div>
+
+<div class="question"><p>26. Write the plural form of <em>person</em>.</p>
+<input name="q26" autocomplete="off" placeholder="Your answer"></div>
+
+<div class="question"><p>27. Write the possessive form of <em>the bag of the girl</em>.</p>
+<input name="q27" autocomplete="off" placeholder="Your answer"></div>
+
+<div class="question"><p>28. Find the word in the text that means: <em>a place or thing that protects someone from direct sunlight.</em></p>
+<input name="q28" autocomplete="off" placeholder="Your answer"></div>
+
+<div class="question"><p>29. Complete the sentence with the correct forms of <em>to be</em>: My parents ___ doctors, and my father ___ 45 years old.</p>
+<input name="q29" autocomplete="off" placeholder="Your answer"></div>
+
+<div class="question"><p>30. Write the possessive form of <em>the house of Mr Brown</em>.</p>
+<input name="q30" autocomplete="off" placeholder="Your answer"></div>
+
+<button type="submit" id="submitTestBtn">Submit test</button>
+<div id="testMessage" class="message hidden" role="status"></div>
 </form>
 <div id="testResult" class="card hidden"></div>
 </section>
-<section id="teacherSection" class="hidden">
-<div class="card"><div class="grid"><div><h2>Teacher panel</h2><p id="teacherEmailDisplay" class="muted"></p></div><div style="text-align:right"><button class="secondary" onclick="logout()">Log out</button></div></div></div>
+
+<section id="customTestSection" class="hidden">
 <div class="card">
-<h3>Şagird əlavə et</h3>
+<button class="secondary" onclick="backToCabinet()">← Şagird kabinetinə qayıt</button>
+<h2 id="customTestHeading">Onlayn sınaq</h2>
+<div id="customTestFileLink"></div>
+<div id="customTestQuestionArea"></div>
+<button id="customTestSubmit" onclick="submitCustomTest()">Sınağı bitir</button>
+<div id="customTestMessage" class="message hidden" role="status"></div>
+<div id="customTestResult" class="message hidden"></div>
+</div>
+</section>
+
+<section id="teacherSection" class="hidden">
+<div class="card">
+<div class="grid"><div>
+<h2>Teacher panel</h2>
+<p id="teacherEmailDisplay" class="muted"></p>
+<button id="addStudentTopBtn" onclick="document.getElementById('newStudentName').scrollIntoView({behavior:'smooth',block:'center'});document.getElementById('newStudentName').focus();">＋ ŞAGİRD ƏLAVƏ ET</button>
+</div><div style="text-align:right"><button class="secondary" onclick="logout()">Log out</button></div></div>
+</div>
+
+<div class="card" id="addStudentCard" style="border:2px solid var(--accent);background:#fff7ed">
+<h3>＋ Şagird əlavə et</h3>
 <p class="muted">Şagirdin adını və soyadını yaz, sonra düyməyə bas. Sistem giriş kodu yaradacaq.</p>
 <label for="newStudentName">Şagirdin adı və soyadı</label>
 <input id="newStudentName" autocomplete="off" placeholder="Məsələn, Aysel Məmmədova">
 <button id="addStudentBtn" onclick="createStudent()">+ Şagird əlavə et</button>
 <div id="createStudentMessage" class="message hidden" role="status" aria-live="polite"></div>
 </div>
+
 <div class="card">
 <h3>Şagirdlərim</h3>
 <p class="muted">Supabase-də saxlanılan şagird siyahısı.</p>
@@ -66,30 +305,110 @@
 <div id="teacherStudentsMessage" class="message hidden" role="status"></div>
 <div id="teacherStudents" class="muted">Siyahı yüklənməyib.</div>
 </div>
+
 <div class="card">
 <h3>Şagirdlərimin nəticələri</h3>
 <p class="muted">Şagirdlərin sınaq nəticələri tarixə görə göstərilir.</p>
 <button onclick="loadTeacherResults()">Nəticələri yenilə</button>
+<button class="secondary" onclick="exportTeacherResults()">Excel-ə ixrac et</button>
 <div id="teacherResultsMessage" class="message hidden" role="status"></div>
 <div id="teacherResults" class="muted">Nəticələr yüklənməyib.</div>
 </div>
-<div class="card"><h3>Manage practice test status</h3><p class="muted">The 30-question Grade 9 practice test can be saved as a draft, activated for students, or deactivated. The status is stored in Supabase.</p><div class="grid"><div><label for="practiceTestTitle">Test title</label><input id="practiceTestTitle" value="Grade 9 Practice Test — Reading, Nouns & To be"></div><div><label for="practiceTestStatus">Status</label><select id="practiceTestStatus"><option value="draft">Draft — Qaralama</option><option value="active">Aktiv</option><option value="inactive">Deaktiv</option></select></div></div><button onclick="savePracticeTestStatus()">Save status</button><button class="secondary" onclick="loadPracticeTestStatus()">Refresh status</button><div id="practiceTestMessage" class="message hidden" role="status"></div><div id="practiceTestStatusInfo" class="item muted">Loading status...</div></div>
-<div class="card"><h3>Upload a material</h3><p class="muted">Choose a PDF or image. The Storage bucket must be public for its public link to open.</p>
+
+<div class="card">
+<h3>Yeni onlayn sınaq yarat</h3>
+<p class="muted">Sualları aşağıdakı formatda daxil et. Hər sual üçün Correct və Points sətrləri olmalıdır. PDF/şəkil əlavə etmək istəyə görədir.</p>
+<label for="customTestTitle">Sınağın adı</label>
+<input id="customTestTitle" placeholder="Məsələn, Nouns and To be — Test 2">
+
+<div class="grid">
+<div><label for="customTestGrade">Sinif</label>
+<select id="customTestGrade">
+<option value="2">2-ci sinif</option><option value="3">3-cü sinif</option><option value="4">4-cü sinif</option><option value="5">5-ci sinif</option><option value="6">6-cı sinif</option><option value="7">7-ci sinif</option><option value="8">8-ci sinif</option><option value="9" selected>9-cu sinif</option><option value="10">10-cu sinif</option><option value="11">11-ci sinif</option>
+</select></div>
+<div><label for="customTestStatus">Status</label>
+<select id="customTestStatus">
+<option value="draft">Qaralama</option><option value="active">Aktiv</option><option value="inactive">Deaktiv</option>
+</select></div>
+</div>
+
+<label for="customTestQuestions">Suallar və cavablar</label>
+<textarea id="customTestQuestions" rows="12" placeholder="1. This is _____ book.
+A) me
+B) my
+C) I
+D) mine
+Correct: B
+Points: 4
+
+2. They _____ students.
+A) is
+B) am
+C) are
+D) be
+Correct: C
+Points: 4"></textarea>
+
+<label for="customTestFile">PDF və ya şəkil (istəyə görə)</label>
+<input id="customTestFile" type="file" accept=".pdf,image/*">
+<button onclick="createCustomTest()">Sınağı yadda saxla</button>
+<button class="secondary" onclick="loadCustomTeacherTests()">Sınaqları yenilə</button>
+<div id="customTestCreateMessage" class="message hidden" role="status"></div>
+<div id="customTeacherTests" class="item muted">Sınaqlar yüklənməyib.</div>
+</div>
+
+<div class="card"><h3>Ayın birincisi və aylıq reytinq</h3>
+<p class="muted">Aylıq orta nəticəyə görə sıralama.</p>
+<button onclick="loadMonthlyRanking()">Aylıq reytinqi yenilə</button>
+<div id="monthlyRanking" class="item muted">Reytinq yüklənməyib.</div>
+</div>
+
+<div class="card">
+<h3>Manage practice test status</h3>
+<p class="muted">The 30-question Grade 9 practice test can be saved as a draft, activated for students, or deactivated. The status is stored in Supabase.</p>
+<div class="grid">
+<div><label for="practiceTestTitle">Test title</label><input id="practiceTestTitle" value="Grade 9 Practice Test — Reading, Nouns & To be"></div>
+<div><label for="practiceTestStatus">Status</label>
+<select id="practiceTestStatus"><option value="draft">Draft — Qaralama</option><option value="active">Aktiv</option><option value="inactive">Deaktiv</option></select></div>
+</div>
+<button onclick="savePracticeTestStatus()">Save status</button>
+<button class="secondary" onclick="loadPracticeTestStatus()">Refresh status</button>
+<div id="practiceTestMessage" class="message hidden" role="status"></div>
+<div id="practiceTestStatusInfo" class="item muted">Loading status...</div>
+</div>
+
+<div class="card">
+<h3>Upload a material</h3>
+<p class="muted">Choose a PDF or image. The Storage bucket must be public for its public link to open.</p>
 <label for="materialTitle">Material title</label><input id="materialTitle" placeholder="Title">
-<div class="grid"><div><label for="materialGrade">Grade</label><select id="materialGrade"><option value="2">Grade 2</option><option value="3">Grade 3</option><option value="4">Grade 4</option><option value="5">Grade 5</option><option value="6">Grade 6</option><option value="7">Grade 7</option><option value="8">Grade 8</option><option value="9">Grade 9</option><option value="10">Grade 10</option><option value="11">Grade 11</option></select></div><div><label for="materialTopic">Topic</label><input id="materialTopic" placeholder="Topic"></div></div>
-<label for="materialFile">Choose a PDF or image</label><input id="materialFile" type="file" accept=".pdf,image/*">
-<button onclick="uploadMaterial()">Upload and save material</button><div id="materialMessage" class="message hidden" role="status"></div></div>
+<div class="grid">
+<div><label for="materialGrade">Grade</label><select id="materialGrade"><option value="2">Grade 2</option><option value="3">Grade 3</option><option value="4">Grade 4</option><option value="5">Grade 5</option><option value="6">Grade 6</option><option value="7">Grade 7</option><option value="8">Grade 8</option><option value="9">Grade 9</option><option value="10">Grade 10</option><option value="11">Grade 11</option></select></div>
+<div><label for="materialTopic">Topic</label><input id="materialTopic" placeholder="Topic"></div>
+</div>
+<label for="materialFile">Choose a PDF or image</label>
+<input id="materialFile" type="file" accept=".pdf,image/*">
+<button onclick="uploadMaterial()">Upload and save material</button>
+<div id="materialMessage" class="message hidden" role="status"></div>
+</div>
+
 <div class="card"><h3>Saved materials</h3><div id="teacherMaterials" class="muted">Loading...</div></div>
 </section>
+ 
 </main>
-<script>
+ <script>
 const SUPABASE_URL = 'https://ngnonuzopyeymgjoypkh.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_KAsjgKdKnFOHrims8ZbnkQ__4nZ1M2S';
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
 let currentStudent = null;
 let currentToken = null;
 let lastTestSubmitted = false;
 let activePracticeTest = null;
+let currentCustomTest = null;
+let customTestAlreadySubmitted = false;
+let teacherResultRows = [];
+let teacherResultsCache = [];
+
 const TEST_TITLE = 'Grade 9 Practice Test — Reading, Nouns & To be';
 const MCQ_ANSWERS = {q1:'B',q2:'B',q3:'B',q4:'D',q9:'C',q10:'B',q11:'C',q12:'B',q13:'C',q14:'B',q15:'C',q16:'C',q17:'A',q18:'B',q19:'C',q20:'B'};
 const TEXT_ANSWERS = {
@@ -98,98 +417,458 @@ const TEXT_ANSWERS = {
  q27:["the girl's bag","girl's bag"], q28:["shade"],
  q29:['are/is','are, is','are is'], q30:["mr brown's house","mr. brown's house","the house of mr brown"]
 };
+
 function normalize(s){return String(s||'').toLowerCase().trim().replace(/[’‘]/g,"'").replace(/[.,!?]/g,'').replace(/\s+/g,' ')}
 function showMessage(id,text){const el=document.getElementById(id);el.textContent=text;el.classList.remove('hidden')}
 function hideMessage(id){document.getElementById(id).classList.add('hidden')}
-function showOnly(sectionId){['loginSection','studentSection','testSection','teacherSection'].forEach(id=>document.getElementById(id).classList.add('hidden'));document.getElementById(sectionId).classList.remove('hidden')}
+function showOnly(sectionId){['loginSection','studentSection','testSection','customTestSection','teacherSection'].forEach(id=>document.getElementById(id).classList.add('hidden'));document.getElementById(sectionId).classList.remove('hidden')}
 function getStudentName(data){if(!data)return '';if(Array.isArray(data))data=data[0];return data.full_name||data.student_name||data.name||data.studentName||''}
 function getStudentToken(data){if(!data)return '';if(Array.isArray(data))data=data[0];return data.token||data.session_token||data.p_token||data.access_token||''}
-async function studentLogin(){hideMessage('loginMessage');const code=document.getElementById('studentCode').value.trim();if(!code){showMessage('loginMessage','Please enter your student access code.');return}
+
+async function studentLogin(){
+ hideMessage('loginMessage');
+ const code=document.getElementById('studentCode').value.trim();
+ if(!code){showMessage('loginMessage','Please enter your student access code.');return}
  const btn=document.getElementById('studentLoginBtn');btn.disabled=true;
- try{const {data,error}=await supabaseClient.rpc('student_login',{p_code:code});if(error)throw error;if(!data)throw new Error('Invalid access code or inactive student account.');currentStudent=getStudentName(data);currentToken=getStudentToken(data);if(!currentStudent)throw new Error('The login function did not return the student name. Please check the student_login RPC.');if(!currentToken)throw new Error('The login function did not return a session token. Please check the student_login RPC.');
- document.getElementById('studentWelcome').textContent='Welcome, '+currentStudent+'!';showOnly('studentSection');await loadActivePracticeTest();const assigned=!!activePracticeTest;document.getElementById('assignedTestCard').classList.toggle('hidden',!assigned);document.getElementById('notAssigned').classList.toggle('hidden',assigned);if(assigned){document.querySelector('#assignedTestCard h2').textContent=activePracticeTest.title||TEST_TITLE;document.querySelector('#testSection .card h2').textContent=activePracticeTest.title||TEST_TITLE;}await loadStudentResults();await loadStudentMaterials();
- }catch(e){showMessage('loginMessage','Login error: '+(e.message||String(e)))}finally{btn.disabled=false}}
-async function teacherLogin(){hideMessage('loginMessage');const email=document.getElementById('teacherEmail').value.trim();const password=document.getElementById('teacherPassword').value;if(!email||!password){showMessage('loginMessage','Enter your email and password.');return}if(email.toLowerCase()!=='zeynebnaghizade@gmail.com'){showMessage('loginMessage','This teacher panel is restricted to the authorized teacher account.');return}
- try{const {data,error}=await supabaseClient.auth.signInWithPassword({email,password});if(error)throw error;if((data.user?.email||'').toLowerCase()!=='zeynebnaghizade@gmail.com')throw new Error('Unauthorized teacher account.');document.getElementById('teacherEmailDisplay').textContent=data.user?.email||email;showOnly('teacherSection');await Promise.all([loadTeacherMaterials(),loadPracticeTestStatus(),loadTeacherStudents(),loadTeacherResults()])}catch(e){showMessage('loginMessage','Teacher login error: '+(e.message||String(e)))}}
-async function logout(){try{await supabaseClient.auth.signOut()}catch(e){}currentStudent=null;currentToken=null;lastTestSubmitted=false;showOnly('loginSection')}
-async function startTest(){if(!activePracticeTest){await loadActivePracticeTest();}if(!activePracticeTest){showOnly('studentSection');document.getElementById('notAssigned').classList.remove('hidden');return}lastTestSubmitted=false;document.getElementById('testForm').reset();document.getElementById('testResult').classList.add('hidden');hideMessage('testMessage');document.getElementById('submitTestBtn').disabled=false;showOnly('testSection')}
-function backToCabinet(){showOnly('studentSection')}
-async function loadActivePracticeTest(){activePracticeTest=null;try{const {data,error}=await supabaseClient.from('practice_tests').select('id,title,status').eq('status','active').order('updated_at',{ascending:false}).limit(1);if(error)throw error;if(data&&data.length)activePracticeTest=data[0];}catch(e){console.warn('Could not check active practice tests:',e.message||e)}}
-function getAnswer(name){const checked=document.querySelector('input[name="'+name+'"]:checked');if(checked)return checked.value;const el=document.querySelector('[name="'+name+'"]');return el?el.value.trim():''}
-function acceptedText(name,answer){const value=normalize(answer);return (TEXT_ANSWERS[name]||[]).some(x=>normalize(x)===value)}
-function scoreTest(){let correct=0;const details=[];for(let i=1;i<=30;i++){const q='q'+i;let ok=false;if(MCQ_ANSWERS[q])ok=getAnswer(q)===MCQ_ANSWERS[q];else if(q==='q8'){const a=normalize(getAnswer(q));ok=(a.includes('bird')&&(a.includes('fly')||a.includes('unable')))||(a.includes('could not fly'))||(a.includes('couldn\'t fly'))||(a.includes('unable to fly'));}else ok=acceptedText(q,getAnswer(q));if(ok)correct++;details.push({q,answer:getAnswer(q),correct:ok})}return {correct,percentage:Math.round(correct/30*100),details}}
-async function submitTest(event){event.preventDefault();if(lastTestSubmitted)return;await loadActivePracticeTest();if(!activePracticeTest){showMessage('testMessage','This test is not active now. Please return to your cabinet.');document.getElementById('submitTestBtn').disabled=true;return}const result=scoreTest();const btn=document.getElementById('submitTestBtn');btn.disabled=true;showMessage('testMessage','Saving your result...');
- try{const {data,error}=await supabaseClient.rpc('student_save_result',{p_token:currentToken,p_test_title:(activePracticeTest&&activePracticeTest.title)||TEST_TITLE,p_score:result.correct,p_total_questions:30,p_percentage:result.percentage});if(error)throw error;lastTestSubmitted=true;document.getElementById('testResult').innerHTML='<h2>Your result</h2><p class="score">'+result.percentage+' / 100</p><p>You answered <strong>'+result.correct+' out of 30</strong> questions correctly.</p><p class="muted">Your result has been submitted. Please ask your teacher to review open answers if needed.</p><button onclick="backToCabinet()">Return to cabinet</button>';document.getElementById('testResult').classList.remove('hidden');hideMessage('testMessage');document.getElementById('testResult').scrollIntoView({behavior:'smooth'});await loadStudentResults();}
- catch(e){showMessage('testMessage','Your score was calculated, but could not be saved: '+(e.message||String(e)));btn.disabled=false}}
-async function loadStudentResults(){const box=document.getElementById('studentResults');box.textContent='Loading...';try{const {data,error}=await supabaseClient.rpc('student_get_results',{p_token:currentToken});if(error)throw error;if(!data||!data.length){box.textContent='No saved results yet.';return}box.innerHTML='';data.forEach(row=>{const div=document.createElement('div');div.className='item';const title=row.test_title||row.title||'Test';const pct=row.percentage??row.p_percentage??'';const score=row.score??row.p_score??'';div.textContent=title+' — '+(pct!==''?pct+'%':score);box.appendChild(div)})}catch(e){box.textContent='Could not load results: '+(e.message||String(e))}}
-async function loadStudentMaterials(){const box=document.getElementById('studentMaterials');box.textContent='Loading...';try{const {data,error}=await supabaseClient.from('english_materials').select('created_at,Title,Content,Grade,Topic').order('created_at',{ascending:false});if(error)throw error;if(!data||!data.length){box.textContent='No materials available yet.';return}box.innerHTML='';data.forEach(m=>{const div=document.createElement('div');div.className='item';const title=document.createElement('strong');title.textContent=m.Title||'Material';div.appendChild(title);const meta=document.createElement('div');meta.className='small';meta.textContent='Grade '+(m.Grade||'—')+' · '+(m.Topic||'');div.appendChild(meta);if(m.Content){const a=document.createElement('a');a.href=m.Content;a.target='_blank';a.rel='noopener noreferrer';a.textContent='Open material';a.style.color='var(--accent)';div.appendChild(a)}box.appendChild(div)})}catch(e){box.textContent='Could not load materials: '+(e.message||String(e))}}
-async function loadPracticeTestStatus(){const box=document.getElementById('practiceTestStatusInfo');box.textContent='Loading status...';try{const title=document.getElementById('practiceTestTitle').value.trim()||TEST_TITLE;const {data,error}=await supabaseClient.from('practice_tests').select('id,title,status,updated_at').eq('title',title).order('updated_at',{ascending:false}).limit(1);if(error)throw error;if(!data||!data.length){box.textContent='No status record yet. Choose a status and press “Save status” to create it.';return}const row=data[0];document.getElementById('practiceTestStatus').value=['draft','active','inactive'].includes(row.status)?row.status:'draft';box.textContent='Current status: '+({draft:'Draft — Qaralama',active:'Aktiv',inactive:'Deaktiv'}[row.status]||row.status)+' · Updated: '+(row.updated_at?new Date(row.updated_at).toLocaleString('az-AZ'):'—');}catch(e){box.textContent='Status could not be loaded: '+(e.message||String(e))+'. Check that the practice_tests table exists and the teacher has permission.'}}
-async function savePracticeTestStatus(){const title=document.getElementById('practiceTestTitle').value.trim();const status=document.getElementById('practiceTestStatus').value;hideMessage('practiceTestMessage');if(!title){showMessage('practiceTestMessage','Enter a test title.');return}try{const {data:found,error:findError}=await supabaseClient.from('practice_tests').select('id').eq('title',title).order('updated_at',{ascending:false}).limit(1);if(findError)throw findError;let result;if(found&&found.length){result=await supabaseClient.from('practice_tests').update({status,updated_at:new Date().toISOString()}).eq('id',found[0].id).select('id,title,status').single()}else{result=await supabaseClient.from('practice_tests').insert({title,status,updated_at:new Date().toISOString()}).select('id,title,status').single()}if(result.error)throw result.error;showMessage('practiceTestMessage','Status saved: '+({draft:'Draft — Qaralama',active:'Aktiv',inactive:'Deaktiv'}[status]||status));await loadPracticeTestStatus();await loadActivePracticeTest();}catch(e){showMessage('practiceTestMessage','Status saxlanmadı: '+(e.message||String(e))+'. Supabase-də practice_tests cədvəli və müəllim üçün INSERT/UPDATE/SELECT icazələri yoxlanmalıdır.')}}
-function safeText(value){return value===null||value===undefined||value===''?'—':String(value)}
-async function createStudent(){
- const input=document.getElementById('newStudentName');
- const btn=document.getElementById('addStudentBtn');
- const name=input.value.trim();
- hideMessage('createStudentMessage');
- if(!name){showMessage('createStudentMessage','Zəhmət olmasa şagirdin adını və soyadını yaz.');input.focus();return;}
- btn.disabled=true;btn.textContent='Əlavə olunur...';
  try{
-  const {data,error}=await supabaseClient.rpc('teacher_create_student',{p_full_name:name});
+  const {data,error}=await supabaseClient.rpc('student_login',{p_code:code});
   if(error)throw error;
-  let student=data;
-  if(Array.isArray(student))student=student[0];
-  if(typeof student==='string'){
-   try{student=JSON.parse(student)}catch(_){student={message:student}}
+  if(!data)throw new Error('Invalid access code or inactive student account.');
+  currentStudent=getStudentName(data);currentToken=getStudentToken(data);
+  if(!currentStudent)throw new Error('The login function did not return the student name. Please check the student_login RPC.');
+  if(!currentToken)throw new Error('The login function did not return a session token. Please check the student_login RPC.');
+  document.getElementById('studentWelcome').textContent='Welcome, '+currentStudent+'!';
+  showOnly('studentSection');
+  await loadActivePracticeTest();
+  await loadCustomStudentTests();
+  const assigned=!!activePracticeTest;
+  document.getElementById('assignedTestCard').classList.toggle('hidden',!assigned);
+  document.getElementById('notAssigned').classList.toggle('hidden',assigned);
+  if(assigned){
+   document.querySelector('#assignedTestCard h2').textContent=activePracticeTest.title||TEST_TITLE;
+   document.querySelector('#testSection .card h2').textContent=activePracticeTest.title||TEST_TITLE;
   }
-  student=student||{};
-  const code=student.student_code||student.code||student.access_code||student.p_code||student.generated_code||'';
-  const savedName=student.full_name||student.student_name||student.name||name;
-  if(!code){
-   showMessage('createStudentMessage','Cavab alındı, amma giriş kodu cavabda görünmür. Şagird siyahısını yenilə və ya teacher_create_student funksiyasının qaytardığı sahələri yoxla.');
-   await loadTeacherStudents();
-   return;
-  }
-  showMessage('createStudentMessage','Şagird əlavə olundu: '+savedName+' | Giriş kodu: '+code+' — bu kodu şagirdə göndər.');
-  input.value='';
-  await loadTeacherStudents();
- }catch(e){showMessage('createStudentMessage','Şagird əlavə edilmədi: '+(e.message||String(e))+'. Müəllim hesabına daxil olduğuna və teacher_create_student RPC icazəsinə əmin ol.');}
- finally{btn.disabled=false;btn.textContent='+ Şagird əlavə et';}
+  await loadStudentResults();
+  await loadStudentMaterials();
+ }catch(e){showMessage('loginMessage','Login error: '+(e.message||String(e)))}
+ finally{btn.disabled=false}
 }
 
-async function loadTeacherStudents(){
- const box=document.getElementById('teacherStudents');const msg='teacherStudentsMessage';hideMessage(msg);box.textContent='Loading...';
+async function teacherLogin(){
+ hideMessage('loginMessage');
+ const email=document.getElementById('teacherEmail').value.trim();
+ const password=document.getElementById('teacherPassword').value;
+ if(!email||!password){showMessage('loginMessage','Enter your email and password.');return}
+ if(email.toLowerCase()!=='zeynebnaghizade@gmail.com'){showMessage('loginMessage','This teacher panel is restricted to the authorized teacher account.');return}
  try{
-  const {data,error}=await supabaseClient.rpc('teacher_get_students');if(error)throw error;
-  if(!data||!data.length){box.textContent='Hələ şagird yoxdur.';return}
-  box.innerHTML='';
-  data.forEach((student,index)=>{
-   const div=document.createElement('div');div.className='item';
-   const title=document.createElement('strong');title.textContent=(index+1)+'. '+safeText(student.full_name);div.appendChild(title);
-   const meta=document.createElement('div');meta.className='small';meta.textContent='Sinif: '+safeText(student.grade)+' · Giriş kodu: '+safeText(student.student_code)+' · Status: '+(student.is_active?'Aktiv':'Deaktiv');div.appendChild(meta);
-   box.appendChild(div);
-  });
- }catch(e){box.textContent='Şagird siyahısı yüklənmədi.';showMessage(msg,'Xəta: '+(e.message||String(e)))}
+  const {data,error}=await supabaseClient.auth.signInWithPassword({email,password});
+  if(error)throw error;
+  if((data.user?.email||'').toLowerCase()!=='zeynebnaghizade@gmail.com')throw new Error('Unauthorized teacher account.');
+  document.getElementById('teacherEmailDisplay').textContent=data.user?.email||email;
+  showOnly('teacherSection');
+  await Promise.all([loadTeacherMaterials(),loadPracticeTestStatus(),loadTeacherStudents(),loadTeacherResults(),loadCustomTeacherTests(),loadMonthlyRanking()]);
+ }catch(e){showMessage('loginMessage','Teacher login error: '+(e.message||String(e)))}
 }
-async function loadTeacherResults(){
- const box=document.getElementById('teacherResults');const msg='teacherResultsMessage';hideMessage(msg);box.textContent='Loading...';
+
+async function logout(){try{await supabaseClient.auth.signOut()}catch(e){}currentStudent=null;currentToken=null;lastTestSubmitted=false;showOnly('loginSection')}
+  
+async function startTest(){if(!activePracticeTest){await loadActivePracticeTest()}if(!activePracticeTest){showOnly('studentSection');document.getElementById('notAssigned').classList.remove('hidden');return}lastTestSubmitted=false;document.getElementById('testForm').reset();document.getElementById('testResult').classList.add('hidden');hideMessage('testMessage');document.getElementById('submitTestBtn').disabled=false;showOnly('testSection')}
+function backToCabinet(){showOnly('studentSection')}
+async function loadActivePracticeTest(){activePracticeTest=null;try{const {data,error}=await supabaseClient.from('practice_tests').select('id,title,status,test_type').eq('status','active').or('test_type.is.null,test_type.eq.default').order('updated_at',{ascending:false}).limit(1);if(error)throw error;if(data&&data.length)activePracticeTest=data[0]}catch(e){console.warn('Could not check active practice tests:',e.message||e)}}
+function getAnswer(name){const checked=document.querySelector('input[name="'+name+'"]:checked');if(checked)return checked.value;const el=document.querySelector('[name="'+name+'"]');return el?el.value.trim():''}
+function acceptedText(name,answer){const value=normalize(answer);return (TEXT_ANSWERS[name]||[]).some(x=>normalize(x)===value)}
+function scoreTest(){let correct=0;const details=[];for(let
+ i=1;i<=30;i++){const q='q'+i;let ok=false;if(MCQ_ANSWERS[q])ok=getAnswer(q)===MCQ_ANSWERS[q];else if(q==='q8'){const a=normalize(getAnswer(q));ok=(a.includes('bird')&&(a.includes('fly')||a.includes('unable')))||(a.includes('could not fly'))||(a.includes("couldn't fly"))||(a.includes('unable to fly'))}else ok=acceptedText(q,getAnswer(q));if(ok)correct++;details.push({q,answer:getAnswer(q),correct:ok})}return {correct,percentage:Math.round(correct/30*100),details}}
+async function submitTest(event){
+ event.preventDefault();
+ if(lastTestSubmitted)return;
+ await loadActivePracticeTest();
+ if(!activePracticeTest){showMessage('testMessage','This test is not active now. Please return to your cabinet.');document.getElementById('submitTestBtn').disabled=true;return}
+ const result=scoreTest();
+ const btn=document.getElementById('submitTestBtn');
+ btn.disabled=true;
+ showMessage('testMessage','Saving your result...');
  try{
-  const {data,error}=await supabaseClient.rpc('teacher_get_results');if(error)throw error;
-  if(!data||!data.length){box.textContent='Hələ saxlanılmış sınaq nəticəsi yoxdur.';return}
+  const {data,error}=await supabaseClient.rpc('student_save_result',{p_token:currentToken,p_test_title:(activePracticeTest&&activePracticeTest.title)||TEST_TITLE,p_score:result.correct,p_total_questions:30,p_percentage:result.percentage});
+  if(error)throw error;
+  lastTestSubmitted=true;
+  document.getElementById('testResult').innerHTML='<h2>Your result</h2><p class="score">'+result.percentage+' / 100</p><p>You answered <strong>'+result.correct+' out of 30</strong> questions correctly.</p><p class="muted">Your result has been submitted. Please ask your teacher to review open answers if needed.</p><button onclick="backToCabinet()">Return to cabinet</button>';
+  document.getElementById('testResult').classList.remove('hidden');
+  hideMessage('testMessage');
+  document.getElementById('testResult').scrollIntoView({behavior:'smooth'});
+  await loadStudentResults();
+ }catch(e){showMessage('testMessage','Your score was calculated, but could not be saved: '+(e.message||String(e)));btn.disabled=false}
+}
+
+async function loadStudentResults(){
+ const box=document.getElementById('studentResults');box.textContent='Loading...';
+ try{
+  const {data,error}=await supabaseClient.rpc('student_get_results',{p_token:currentToken});
+  if(error)throw error;
+  if(!data||!data.length){box.textContent='No saved results yet.';return}
   box.innerHTML='';
   data.forEach(row=>{
    const div=document.createElement('div');div.className='item';
-   const title=document.createElement('strong');title.textContent=safeText(row.full_name)+' — '+safeText(row.test_title);div.appendChild(title);
-   const meta=document.createElement('div');meta.className='small';
-   const score=safeText(row.score)+' / '+safeText(row.total_questions);
-   const pct=row.percentage===null||row.percentage===undefined?'—':String(row.percentage)+'%';
-   const date=row.created_at?new Date(row.created_at).toLocaleString('az-AZ'):'—';
-   meta.textContent='Bal: '+score+' · Faiz: '+pct+' · Tarix: '+date;div.appendChild(meta);
+   const title=row.test_title||row.title||'Test';
+   const pct=row.percentage??row.p_percentage??'';
+   const score=row.score??row.p_score??'';
+   div.textContent=title+' — '+(pct!==''?pct+'%':score);
    box.appendChild(div);
   });
- }catch(e){box.textContent='Nəticələr yüklənmədi.';showMessage(msg,'Xəta: '+(e.message||String(e)))}
+ }catch(e){box.textContent='Could not load results: '+(e.message||String(e))}
+ try{
+  const {data:custom,error:ce}=await supabaseClient.rpc('student_custom_test_results',{p_token:currentToken});
+  if(!ce&&custom&&custom.length){custom.forEach(row=>{const div=document.createElement('div');div.className='item';div.textContent=(row.test_title||'Onlayn sınaq')+' — '+(row.percentage??0)+'%';box.appendChild(div)})}
+ }catch(e){console.warn('Custom results are not available until student_custom_test_results RPC is created.')}
 }
-async function uploadMaterial(){hideMessage('materialMessage');const title=document.getElementById('materialTitle').value.trim();const grade=document.getElementById('materialGrade').value;const topic=document.getElementById('materialTopic').value.trim();const file=document.getElementById('materialFile').files[0];if(!title||!file){showMessage('materialMessage','Enter a title and choose a PDF or image.');return}try{const safeName=file.name.replace(/[^a-zA-Z0-9._-]/g,'_');const path=Date.now()+'_'+safeName;const {error:uploadError}=await supabaseClient.storage.from('english_materials').upload(path,file,{upsert:false,contentType:file.type||undefined});if(uploadError)throw uploadError;const {data:urlData}=supabaseClient.storage.from('english_materials').getPublicUrl(path);const fileUrl=urlData?.publicUrl;if(!fileUrl)throw new Error('Could not create the public file URL.');const {error:insertError}=await supabaseClient.from('english_materials').insert({Title:title,Content:fileUrl,Grade:grade,Topic:topic});if(insertError)throw insertError;showMessage('materialMessage','Material uploaded and saved successfully.');document.getElementById('materialTitle').value='';document.getElementById('materialTopic').value='';document.getElementById('materialFile').value='';await loadTeacherMaterials()}catch(e){showMessage('materialMessage','Upload error: '+(e.message||String(e))+' If upload succeeded but saving failed, check Storage/table policies.')}}
-async function loadTeacherMaterials(){const box=document.getElementById('teacherMaterials');box.textContent='Loading...';try{const {data,error}=await supabaseClient.from('english_materials').select('created_at,Title,Content,Grade,Topic').order('created_at',{ascending:false});if(error)throw error;if(!data||!data.length){box.textContent='No materials saved yet.';return}box.innerHTML='';data.forEach(m=>{const div=document.createElement('div');div.className='item';const strong=document.createElement('strong');strong.textContent=m.Title||'Material';div.appendChild(strong);const meta=document.createElement('div');meta.className='small';meta.textContent='Grade '+(m.Grade||'—')+' · '+(m.Topic||'');div.appendChild(meta);if(m.Content){const a=document.createElement('a');a.href=m.Content;a.target='_blank';a.rel='noopener noreferrer';a.textContent='Open file';a.style.color='var(--accent)';div.appendChild(a)}box.appendChild(div)})}catch(e){box.textContent='Could not load materials: '+(e.message||String(e))}}
+
+async function loadStudentMaterials(){
+ const box=document.getElementById('studentMaterials');box.textContent='Loading...';
+ try{
+  const {data,error}=await supabaseClient.from('english_materials').select('created_at,Title,Content,Grade,Topic').order('created_at',{ascending:false});
+  if(error)throw error;
+  if(!data||!data.length){box.textContent='No materials available yet.';return}
+  box.innerHTML='';
+  data.forEach(m=>{
+   const div=document.createElement('div');div.className='item';
+   const title=document.createElement('strong');title.textContent=m.Title||'Material';div.appendChild(title);
+   const meta=document.createElement('div');meta.className='small';meta.textContent='Grade '+(m.Grade||'—')+' · '+(m.Topic||'');div.appendChild(meta);
+   if(m.Content){const a=document.createElement('a');a.href=m.Content;a.target='_blank';a.rel='noopener noreferrer';a.textContent='Open material';a.style.color='var(--accent)';div.appendChild(a)}
+   box.appendChild(div);
+  });
+ }catch(e){box.textContent='Could not load materials: '+(e.message||String(e))}
+}
+
+async function loadPracticeTestStatus(){
+ const box=document.getElementById('practiceTestStatusInfo');box.textContent='Loading status...';
+ try{
+  const title=document.getElementById('practiceTestTitle').value.trim()||TEST_TITLE;
+  const {data,error}=await supabaseClient.from('practice_tests').select('id,title,status,updated_at').eq('title',title).order('updated_at',{ascending:false}).limit(1);
+  if(error)throw error;
+  if(!data||!data.length){box.textContent='No status record yet. Choose a status and press “Save status” to create it.';return}
+  const row=data[0];
+  document.getElementById('practiceTestStatus').value=['draft','active','inactive'].includes(row.status)?row.status:'draft';
+  box.textContent='Current status: '+({draft:'Draft — Qaralama',active:'Aktiv',inactive:'Deaktiv'}[row.status]||row.status)+' · Updated: '+(row.updated_at?new Date(row.updated_at).toLocaleString('az-AZ'):'—');
+ }catch(e){box.textContent='Status could not be loaded: '+(e.message||String(e))+'. Check that the practice_tests table exists and the teacher has permission.'}
+}
+
+async function savePracticeTestStatus(){
+ const title=document.getElementById('practiceTestTitle').value.trim();
+ const status=document.getElementById('practiceTestStatus').value;
+ hideMessage('practiceTestMessage');
+ if(!title){showMessage('practiceTestMessage','Enter a test title.');return}
+ try{
+  const {data:found,error:findError}=await supabaseClient.from('practice_tests').select('id').eq('title',title).order('updated_at',{ascending:false}).limit(1);
+  if(findError)throw findError;
+  let result;
+  if(found&&found.length){result=await supabaseClient.from('practice_tests').update({status,updated_at:new Date().toISOString()}).eq('id',found[0].id).select('id,title,status').single()}
+  else{result=await supabaseClient.from('practice_tests').insert({title,status,updated_at:new Date().toISOString()}).select('id,title,status').single()}
+  if(result.error)throw result.error;
+  showMessage('practiceTestMessage','Status saved: '+({draft:'Draft — Qaralama',active:'Aktiv',inactive:'Deaktiv'}[status]||status));
+  await loadPracticeTestStatus();await loadActivePracticeTest();
+ }catch(e){showMessage('practiceTestMessage','Status saxlanmadı: '+(e.message||String(e))+'. Supabase-də practice_tests cədvəli və müəllim üçün INSERT/UPDATE/SELECT icazələri yoxlanmalıdır.')}
+  }
+  async function createStudent(){
+ const name=document.getElementById('newStudentName').value.trim();
+ hideMessage('studentCreateMessage');
+ if(!name){showMessage('studentCreateMessage','Şagirdin adını və soyadını yaz.');return}
+ try{
+  const {data,error}=await supabaseClient.rpc('teacher_create_student',{p_full_name:name});
+  if(error)throw error;
+  showMessage('studentCreateMessage','Şagird əlavə edildi. Giriş kodunun qaytarılıb-qaytarılmadığını şagird siyahısında yoxla.');
+  document.getElementById('newStudentName').value='';
+  await loadTeacherStudents();
+ }catch(e){showMessage('studentCreateMessage','Şagird əlavə edilmədi: '+(e.message||String(e)))}
+}
+
+async function loadTeacherStudents(){
+ const box=document.getElementById('teacherStudents');
+ box.textContent='Yüklənir...';
+ try{
+  const {data,error}=await supabaseClient.rpc('teacher_get_students');
+  if(error)throw error;
+  if(!data||!data.length){box.textContent='Hələ şagird yoxdur.';return}
+  box.innerHTML='';
+  data.forEach((s,i)=>{
+   const div=document.createElement('div');div.className='item';
+   div.textContent=(i+1)+'. '+(s.full_name||s.student_name||s.name||'Şagird')+' · Kod: '+(s.student_code||s.access_code||s.code||'—');
+   box.appendChild(div);
+  });
+ }catch(e){box.textContent='Şagirdlər yüklənmədi: '+(e.message||String(e))}
+}
+
+async function loadTeacherResults(){
+ const box=document.getElementById('teacherResults');
+ box.textContent='Nəticələr yüklənir...';
+ try{
+  const {data,error}=await supabaseClient.rpc('teacher_get_results');
+  if(error)throw error;
+  teacherResultsCache=data||[];
+  if(!teacherResultsCache.length){box.textContent='Hələ nəticə yoxdur.';return}
+  box.innerHTML='';
+  teacherResultsCache.forEach(r=>{
+   const div=document.createElement('div');div.className='item';
+   div.textContent=(r.student_name||r.full_name||'Şagird')+' — '+(r.test_title||r.title||'Sınaq')+' — '+(r.percentage??r.score??'')+(r.percentage!==undefined?'%':'');
+   box.appendChild(div);
+  });
+ }catch(e){box.textContent='Nəticələr yüklənmədi: '+(e.message||String(e))}
+}
+
+function exportTeacherResults(){
+ if(!teacherResultsCache.length){showMessage('teacherResultsMessage','İxrac üçün nəticə yoxdur.');return}
+ const rows=[['Şagird','Sınaq','Bal','Sual sayı','Faiz','Tarix'],...teacherResultsCache.map(r=>[
+  r.student_name||r.full_name||'',r.test_title||r.title||'',r.score??'',r.total_questions??'',r.percentage??'',r.created_at||''
+ ])];
+ const csv='\uFEFF'+rows.map(row=>row.map(v=>'"'+String(v??'').replace(/"/g,'""')+'"').join(';')).join('\r\n');
+ const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
+ const url=URL.createObjectURL(blob);const a=document.createElement('a');
+ a.href=url;a.download='English_Secretss_neticeler.csv';a.click();URL.revokeObjectURL(url);
+}
+
+function parseCustomQuestionText(raw){
+ const blocks=String(raw||'').trim().split(/\n\s*\n+/).map(x=>x.trim()).filter(Boolean);
+ const questions=[];
+ for(const block of blocks){
+  const lines=block.split(/\r?\n/).map(x=>x.trim()).filter(Boolean);
+  let question='',correct='',points=1;const options=[];
+  for(const line of lines){
+   let m;
+   if((m=line.match(/^\d+[.)]\s*(.+)$/))){question=m[1];continue}
+   if((m=line.match(/^([A-D])\s*[).:]\s*(.+)$/i))){options.push({key:m[1].toUpperCase(),text:m[2]});continue}
+   if((m=line.match(/^(?:Correct|Düzgün cavab)\s*:\s*([A-D])$/i))){correct=m[1].toUpperCase();continue}
+   if((m=line.match(/^(?:Points|Bal)\s*:\s*(\d+(?:\.\d+)?)$/i))){points=Number(m[1]);continue}
+   if(!question)question=line;
+  }
+  if(!question||options.length<2||!correct||!options.some(o=>o.key===correct)){
+   throw new Error('Sual formatı yanlışdır. Hər sualda sual mətni, A/B/C/D variantları və Correct: B kimi düzgün cavab olmalıdır.');
+  }
+  questions.push({id:'q'+(questions.length+1),question,options,correct,points:points>0?points:1});
+ }
+ if(!questions.length)throw new Error('Ən azı bir sual əlavə et.');
+ return questions;
+}
+
+async function createCustomTest(){
+ hideMessage('customTestCreateMessage');
+ const title=document.getElementById('customTestTitle').value.trim();
+ const grade=document.getElementById('customTestGrade').value;
+ const status=document.getElementById('customTestStatus').value;
+ const raw=document.getElementById('customTestQuestions').value;
+ const file=document.getElementById('customTestFile').files[0];
+ if(!title){showMessage('customTestCreateMessage','Sınağın adını yaz.');return}
+ let questions;
+ try{questions=parseCustomQuestionText(raw)}catch(e){showMessage('customTestCreateMessage',e.message);return}
+ try{
+  let fileUrl=null;
+  if(file){
+   const path='tests/'+Date.now()+'_'+file.name.replace(/[^a-zA-Z0-9._-]/g,'_');
+   const {error}=await supabaseClient.storage.from('english_materials').upload(path,file,{upsert:false});
+   if(error)throw error;
+   fileUrl=supabaseClient.storage.from('english_materials').getPublicUrl(path).data.publicUrl;
+  }
+  const id=(crypto.randomUUID?crypto.randomUUID():'test_'+Date.now());
+  const row={id,title,status,updated_at:new Date().toISOString(),created_at:new Date().toISOString(),questions,questions_json:questions,grade,test_type:'custom',file_url:fileUrl};
+  const {error}=await supabaseClient.from('practice_tests').insert(row);
+  if(error)throw error;
+  showMessage('customTestCreateMessage','Sınaq yadda saxlanıldı.');
+  document.getElementById('customTestTitle').value='';
+  document.getElementById('customTestQuestions').value='';
+  document.getElementById('customTestFile').value='';
+  await loadCustomTeacherTests();
+ }catch(e){showMessage('customTestCreateMessage','Sınaq saxlanmadı: '+(e.message||String(e)))}
+}
+
+async function loadCustomTeacherTests(){
+ const box=document.getElementById('customTeacherTests');
+ if(!box)return;
+ box.textContent='Yüklənir...';
+ try{
+  const {data,error}=await supabaseClient.from('practice_tests').select('id,title,status,grade,created_at,file_url,test_type').eq('test_type','custom').order('created_at',{ascending:false});
+  if(error)throw error;
+  if(!data||!data.length){box.textContent='Hələ yeni sınaq yoxdur.';return}
+  box.innerHTML='';
+  data.forEach(t=>{
+   const div=document.createElement('div');div.className='item';
+   const title=document.createElement('strong');title.textContent=t.title;div.appendChild(title);
+   const meta=document.createElement('div');meta.className='small';meta.textContent='Sinif: '+(t.grade||'—')+' · Status: '+(t.status||'draft');div.appendChild(meta);
+   if(t.file_url){const a=document.createElement('a');a.href=t.file_url;a.target='_blank';a.rel='noopener noreferrer';a.textContent='Faylı aç';div.appendChild(a)}
+   ['draft','active','inactive'].forEach(st=>{
+    const b=document.createElement('button');b.className='secondary';b.textContent=st==='active'?'Aktiv et':st==='inactive'?'Deaktiv et':'Qaralama';
+    b.onclick=()=>changeCustomTestStatus(t.id,st);div.appendChild(b);
+   });
+   box.appendChild(div);
+  });
+ }catch(e){box.textContent='Sınaqlar yüklənmədi: '+(e.message||String(e))}
+}
+
+async function changeCustomTestStatus(id,status){
+ try{
+  const {error}=await supabaseClient.from('practice_tests').update({status,updated_at:new Date().toISOString()}).eq('id',id);
+  if(error)throw error;
+  await loadCustomTeacherTests();
+  showMessage('customTestCreateMessage','Status yeniləndi.');
+ }catch(e){showMessage('customTestCreateMessage','Status dəyişmədi: '+(e.message||String(e)))}
+  }
+  async function loadCustomStudentTests(){
+ const box=document.getElementById('customStudentTests');
+ if(!box)return;
+ box.textContent='Aktiv sınaqlar yüklənir...';
+ try{
+  const {data,error}=await supabaseClient.from('practice_tests').select('id,title,status,grade,file_url,questions,questions_json,test_type,created_at').eq('status','active').eq('test_type','custom').order('created_at',{ascending:false});
+  if(error)throw error;
+  if(!data||!data.length){box.textContent='Hazırda yeni aktiv sınaq yoxdur.';return}
+  box.innerHTML='';
+  data.forEach(t=>{
+   const div=document.createElement('div');div.className='item';
+   const title=document.createElement('strong');title.textContent=t.title||'Sınaq';div.appendChild(title);
+   const meta=document.createElement('div');meta.className='small';meta.textContent='Sinif: '+(t.grade||'—');div.appendChild(meta);
+   const b=document.createElement('button');b.textContent='Sınağa başla';b.onclick=()=>startCustomTest(t);div.appendChild(b);
+   if(t.file_url){const a=document.createElement('a');a.href=t.file_url;a.target='_blank';a.rel='noopener noreferrer';a.textContent='PDF/şəkli aç';a.style.display='inline-block';a.style.marginLeft='8px';a.style.color='var(--accent)';div.appendChild(a)}
+   box.appendChild(div);
+  });
+ }catch(e){box.textContent='Yeni sınaqlar yüklənmədi: '+(e.message||String(e))}
+}
+
+function startCustomTest(test){
+ currentCustomTest=test;customTestAlreadySubmitted=false;
+ showOnly('customTestSection');
+ document.getElementById('customTestHeading').textContent=test.title||'Onlayn sınaq';
+ document.getElementById('customTestResult').classList.add('hidden');
+ hideMessage('customTestMessage');
+ document.getElementById('customTestSubmit').disabled=false;
+ const link=document.getElementById('customTestFileLink');link.innerHTML='';
+ if(test.file_url){const a=document.createElement('a');a.href=test.file_url;a.target='_blank';a.rel='noopener noreferrer';a.textContent='Əlavə edilmiş PDF/şəkli aç';a.style.color='var(--accent)';link.appendChild(a)}
+ const questions=Array.isArray(test.questions)?test.questions:(Array.isArray(test.questions_json)?test.questions_json:[]);
+ const area=document.getElementById('customTestQuestionArea');area.innerHTML='';
+ if(!questions.length){area.textContent='Bu sınaqda onlayn sual yoxdur. Əlavə edilmiş faylı aç.';document.getElementById('customTestSubmit').disabled=true;return}
+ questions.forEach((q,i)=>{
+  const div=document.createElement('div');div.className='question';
+  const p=document.createElement('p');p.textContent=(i+1)+'. '+q.question;div.appendChild(p);
+  (q.options||[]).forEach(o=>{
+   const label=document.createElement('label');label.className='option';
+   const input=document.createElement('input');input.type='radio';input.name='custom_'+i;input.value=o.key;
+   label.appendChild(input);label.appendChild(document.createTextNode(o.key+') '+o.text));div.appendChild(label);
+  });
+  area.appendChild(div);
+ });
+}
+
+async function submitCustomTest(){
+ if(!currentCustomTest||customTestAlreadySubmitted)return;
+ const questions=Array.isArray(currentCustomTest.questions)?currentCustomTest.questions:(Array.isArray(currentCustomTest.questions_json)?currentCustomTest.questions_json:[]);
+ let earned=0,total=0;const answers={};
+ questions.forEach((q,i)=>{
+  const selected=document.querySelector('input[name="custom_'+i+'"]:checked');
+  const val=selected?selected.value:'';
+  answers[q.id||('q'+(i+1))]=val;
+  const points=Number(q.points)||1;total+=points;
+  if(val&&val.toUpperCase()===String(q.correct||'').toUpperCase())earned+=points;
+ });
+ const pct=total?Math.round(earned/total*100):0;
+ document.getElementById('customTestSubmit').disabled=true;
+ showMessage('customTestMessage','Nəticə yadda saxlanılır...');
+ try{
+  const {error}=await supabaseClient.from('custom_test_results').insert({
+   student_name:currentStudent,
+   student_token:currentToken,
+   test_id:String(currentCustomTest.id),
+   test_title:currentCustomTest.title,
+   score:earned,
+   total_points:total,
+   percentage:pct,
+   answers
+  });
+  if(error)throw error;
+  customTestAlreadySubmitted=true;
+  hideMessage('customTestMessage');
+  const result=document.getElementById('customTestResult');
+  result.classList.remove('hidden');
+  result.innerHTML='<h3>Nəticən: '+pct+'%</h3><p>'+earned+' / '+total+' bal</p><p>'+(pct>=90?'🎉 Təbriklər! Möhtəşəm nəticə! 🎉':'Sınağı tamamladın. Davam et!')+'</p><button onclick="backToCabinet()">Kabinetə qayıt</button>';
+  await loadStudentResults();
+ }catch(e){
+  document.getElementById('customTestSubmit').disabled=false;
+  showMessage('customTestMessage','Nəticə hesablandı, amma yadda saxlanmadı: '+(e.message||String(e))+'. Supabase cədvəl icazələrini yoxla.');
+ }
+}
+
+async function loadMonthlyRanking(){
+ const box=document.getElementById('monthlyRanking');if(!box)return;
+ box.textContent='Reytinq yüklənir...';
+ try{
+  let rows=[];
+  const {data,error}=await supabaseClient.rpc('teacher_get_results');
+  if(!error&&Array.isArray(data))rows=rows.concat(data.map(r=>({student_name:r.full_name||r.student_name||'Şagird',percentage:r.percentage,created_at:r.created_at})));
+  const cr=await supabaseClient.from('custom_test_results').select('student_name,percentage,created_at');
+  if(!cr.error&&Array.isArray(cr.data))rows=rows.concat(cr.data);
+  const now=new Date();
+  rows=rows.filter(r=>{
+   if(!r.created_at)return false;
+   const d=new Date(r.created_at);
+   return d.getMonth()===now.getMonth()&&d.getFullYear()===now.getFullYear()&&r.percentage!==null&&r.percentage!==undefined;
+  });
+  if(!rows.length){box.textContent='Bu ay hələ nəticə yoxdur.';return}
+  const sums={};
+  rows.forEach(r=>{
+   const name=r.student_name||'Şagird';
+   if(!sums[name])sums[name]={sum:0,count:0};
+   sums[name].sum+=Number(r.percentage)||0;sums[name].count++;
+  });
+  const ranked=Object.entries(sums).map(([name,v])=>({name,percent:Math.round(v.sum/v.count)})).sort((a,b)=>b.percent-a.percent);
+  box.innerHTML='';
+  ranked.forEach((r,i)=>{
+   const div=document.createElement('div');div.className='item';
+   div.textContent=(i===0?'🏆 ':i===1?'🥈 ':i===2?'🥉 ':'')+(i+1)+'. '+r.name+' — '+r.percent+'% aylıq orta';
+   box.appendChild(div);
+  });
+  if(ranked.length){
+   const winner=document.createElement('p');
+   winner.innerHTML='<strong>🎉 Təbriklər, '+safeHtmlText(ranked[0].name)+'! Ayın birincisisən — '+ranked[0].percent+'% orta nəticə! 🎉</strong>';
+   box.prepend(winner);
+  }
+ }catch(e){box.textContent='Aylıq reytinq yüklənmədi: '+(e.message||String(e))}
+}
+
+async function uploadMaterial(){
+ hideMessage('materialMessage');
+ const title=document.getElementById('materialTitle').value.trim();
+ const grade=document.getElementById('materialGrade').value;
+ const topic=document.getElementById('materialTopic').value.trim();
+ const file=document.getElementById('materialFile').files[0];
+ if(!title||!file){showMessage('materialMessage','Materialın adını yaz və PDF/şəkil faylı seç.');return}
+ try{
+  const safeName=file.name.replace(/[^a-zA-Z0-9._-]/g,'_');
+  const path=Date.now()+'_'+safeName;
+  const {error:uploadError}=await supabaseClient.storage.from('english_materials').upload(path,file,{upsert:false,contentType:file.type||undefined});
+  if(uploadError)throw uploadError;
+  const {data:urlData}=supabaseClient.storage.from('english_materials').getPublicUrl(path);
+  const fileUrl=urlData?.publicUrl;
+  if(!fileUrl)throw new Error('Fayl üçün public URL yaradıla bilmədi.');
+  const {error:insertError}=await supabaseClient.from('english_materials').insert({Title:title,Content:fileUrl,Grade:grade,Topic:topic});
+  if(insertError)throw insertError;
+  showMessage('materialMessage','Material uğurla yükləndi və yadda saxlanıldı.');
+  document.getElementById('materialTitle').value='';
+  document.getElementById('materialTopic').value='';
+  document.getElementById('materialFile').value='';
+  await loadTeacherMaterials();
+ }catch(e){showMessage('materialMessage','Fayl yüklənmədi və ya məlumat saxlanmadı: '+(e.message||String(e))+'. Supabase Storage və cədvəl icazələrini yoxlamaq lazımdır.')}
+}
+
+async function loadTeacherMaterials(){
+ const box=document.getElementById('teacherMaterials');box.textContent='Yüklənir...';
+ try{
+  const {data,error}=await supabaseClient.from('english_materials').select('created_at,Title,Content,Grade,Topic').order('created_at',{ascending:false});
+  if(error)throw error;
+  if(!data||!data.length){box.textContent='Hələ material yoxdur.';return}
+  box.innerHTML='';
+  data.forEach(m=>{
+   const div=document.createElement('div');div.className='item';
+   const strong=document.createElement('strong');strong.textContent=m.Title||'Material';div.appendChild(strong);
+   const meta=document.createElement('div');meta.className='small';meta.textContent='Sinif: '+(m.Grade||'—')+' · '+(m.Topic||'');div.appendChild(meta);
+   if(m.Content){const a=document.createElement('a');a.href=m.Content;a.target='_blank';a.rel='noopener noreferrer';a.textContent='Faylı aç';a.style.color='var(--accent)';div.appendChild(a)}
+   box.appendChild(div);
+  });
+ }catch(e){box.textContent='Materiallar yüklənmədi: '+(e.message||String(e))}
+}
 </script>
 </body>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  </html>
+</html>
