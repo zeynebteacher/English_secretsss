@@ -492,6 +492,59 @@ async function teacherLogin(){
   await Promise.all([loadTeacherMaterials(),loadPracticeTestStatus(),loadTeacherStudents(),loadTeacherResults(),loadCustomTeacherTests(),loadMonthlyRanking()]);
  }catch(e){showMessage('loginMessage','Teacher login error: '+(e.message||String(e)))}
 }
+  
+async function loadTeacherStudents(){
+  const list = document.getElementById('teacherStudentsList');
+  if(!list) {
+    console.error('teacherStudentsList elementi tapılmadı.');
+    return;
+  }
+
+  list.innerHTML = '<p>Şagirdlər yüklənir...</p>';
+
+  try {
+    const { data, error } = await supabaseClient
+      .from('students')
+      .select('id, full_name, student_code, is_active, username, grade')
+      .order('full_name', { ascending: true });
+
+    if(error) throw error;
+
+    if(!data || data.length === 0){
+      list.innerHTML = '<p>Hələ şagird əlavə edilməyib.</p>';
+      return;
+    }
+
+    list.innerHTML = data.map(student => `
+      <div class="card" style="margin-bottom:10px;padding:12px;">
+        <strong>${escapeStudentText(student.full_name || 'Adsız şagird')}</strong>
+        <p>Sinif: ${escapeStudentText(student.grade ?? '—')}</p>
+        <p>Giriş kodu: ${escapeStudentText(student.student_code || '—')}</p>
+        <p>Status: ${student.is_active ? 'Aktiv' : 'Deaktiv'}</p>
+      </div>
+    `).join('');
+
+  } catch(error) {
+    console.error('Şagirdləri yükləmə xətası:', error);
+    list.innerHTML =
+      '<p>Şagirdləri yükləmək mümkün olmadı: ' +
+      escapeStudentText(error.message || String(error)) +
+      '</p>';
+  }
+}
+
+function escapeStudentText(value){
+  return String(value).replace(/[&<>"']/g, function(char){
+    return {
+      '&':'&amp;',
+      '<':'&lt;',
+      '>':'&gt;',
+      '"':'&quot;',
+      "'":'&#39;'
+    }[char];
+  });
+}
+
   async function loadTeacherStudents(){
   const list = document.getElementById('teacherStudentsList');
   if(!list) return;
