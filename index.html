@@ -545,17 +545,21 @@ function escapeStudentText(value){
   });
 }
 
-  async function loadTeacherStudents(){
+  
+async function loadTeacherStudents(){
   const list = document.getElementById('teacherStudentsList');
-  if(!list) return;
+  if(!list) {
+    console.error('teacherStudentsList elementi tapılmadı.');
+    return;
+  }
 
   list.innerHTML = '<p>Şagirdlər yüklənir...</p>';
 
   try {
     const { data, error } = await supabaseClient
-      .from('students')
-      .select('*')
-      .order('created_at', { ascending: false });
+      .from('es_students')
+      .select('id, full_name, student_code, is_active, username, grade')
+      .order('full_name', { ascending: true });
 
     if(error) throw error;
 
@@ -565,17 +569,35 @@ function escapeStudentText(value){
     }
 
     list.innerHTML = data.map(student => `
-      <div class="card">
-        <strong>${student.full_name || student.name || 'Şagird'}</strong>
-        <p>Giriş kodu: ${student.access_code || student.code || '—'}</p>
+      <div class="card" style="margin-bottom:10px;padding:12px;">
+        <strong>${escapeStudentText(student.full_name || 'Adsız şagird')}</strong>
+        <p>Sinif: ${escapeStudentText(student.grade ?? '—')}</p>
+        <p>Giriş kodu: ${escapeStudentText(student.student_code || '—')}</p>
+        <p>Status: ${student.is_active ? 'Aktiv' : 'Deaktiv'}</p>
       </div>
     `).join('');
 
   } catch(error) {
-    list.innerHTML = '<p>Şagirdləri yükləmək mümkün olmadı: ' +
-      (error.message || String(error)) + '</p>';
+    console.error('Şagirdləri yükləmə xətası:', error);
+    list.innerHTML =
+      '<p>Şagirdləri yükləmək mümkün olmadı: ' +
+      escapeStudentText(error.message || String(error)) +
+      '</p>';
   }
-  }
+}
+
+function escapeStudentText(value){
+  return String(value).replace(/[&<>"']/g, function(char){
+    return {
+      '&':'&amp;',
+      '<':'&lt;',
+      '>':'&gt;',
+      '"':'&quot;',
+      "'":'&#39;'
+    }[char];
+  });
+}
+
 
 async function logout(){try{await supabaseClient.auth.signOut()}catch(e){}currentStudent=null;currentToken=null;lastTestSubmitted=false;showOnly('loginSection')}
   
