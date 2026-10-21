@@ -753,6 +753,46 @@ async function createStudent(){
  }
 }
 
+  
+async function loadTeacherResults(){
+  const list = document.getElementById('teacherResultsList');
+
+  if(!list){
+    console.error('teacherResultsList elementi tapılmadı.');
+    return;
+  }
+
+  list.innerHTML = '<p>Nəticələr yüklənir...</p>';
+
+  try {
+    const { data, error } = await supabaseClient
+      .from('es_test_results')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if(error) throw error;
+
+    if(!data || data.length === 0){
+      list.innerHTML = '<p>Hələ test nəticəsi yoxdur.</p>';
+      return;
+    }
+
+    list.innerHTML = data.map(result => `
+      <div class="card" style="margin-bottom:10px;padding:12px;">
+        <strong>${escapeStudentText(result.student_name || 'Şagird')}</strong>
+        <p>Test: ${escapeStudentText(result.test_title || result.test_name || 'Test')}</p>
+        <p>Nəticə: ${escapeStudentText(result.score ?? 0)} / ${escapeStudentText(result.total_points ?? 100)}</p>
+        <p>Tarix: ${result.created_at ? new Date(result.created_at).toLocaleString('az-AZ') : '—'}</p>
+      </div>
+    `).join('');
+
+  } catch(error) {
+    console.error('Nəticələri yükləmə xətası:', error);
+    list.innerHTML = '<p>Nəticələr yüklənmədi: ' +
+      escapeStudentText(error.message || String(error)) + '</p>';
+  }
+}
+
 
 
 function exportTeacherResults(){
