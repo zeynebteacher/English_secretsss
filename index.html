@@ -329,14 +329,23 @@ button:disabled{opacity:.5;cursor:not-allowed}
 <div id="teacherStudents" class="muted">Siyahı yüklənməyib.</div>
 </div>
 
+
 <div class="card">
-<h3>Şagirdlərimin nəticələri</h3>
-<p class="muted">Şagirdlərin sınaq nəticələri tarixə görə göstərilir.</p>
-<button onclick="loadTeacherResults()">Nəticələri yenilə</button>
-<button class="secondary" onclick="exportTeacherResults()">Excel-ə ixrac et</button>
-<div id="teacherResultsMessage" class="message hidden" role="status"></div>
-<div id="teacherResults" class="muted">Nəticələr yüklənməyib.</div>
+  <h3>Şagirdlərimin nəticələri</h3>
+  <p class="muted">Şagirdlərin sınaq nəticələri tarixə görə göstərilir.</p>
+
+  <button type="button" onclick="loadTeacherResults()">
+    Nəticələri yenilə
+  </button>
+
+  <button type="button" class="secondary" onclick="exportTeacherResults()">
+    Excel-ə ixrac et
+  </button>
+
+  <div id="teacherResultsMessage" class="message hidden" role="status"></div>
+  <div id="teacherResults" class="muted">Nəticələr yüklənməyib.</div>
 </div>
+
 
 <div class="card">
 <h3>Yeni onlayn sınaq yarat</h3>
@@ -494,8 +503,8 @@ async function teacherLogin(){
 }
   
 async function loadTeacherStudents(){
-  const list = document.getElementById('teacherStudentsList');
-  if(!list) {
+ const list = document.getElementById('teacherResults');
+
     console.error('teacherStudentsList elementi tapılmadı.');
     return;
   }
