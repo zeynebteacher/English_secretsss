@@ -604,21 +604,49 @@ async function savePracticeTestStatus(){
  }catch(e){showMessage('studentCreateMessage','Şagird əlavə edilmədi: '+(e.message||String(e)))}
 }
 
-async function loadTeacherStudents(){
- const box=document.getElementById('teacherStudents');
- box.textContent='Yüklənir...';
- try{
-  const {data,error}=await supabaseClient.rpc('teacher_get_students');
-  if(error)throw error;
-  if(!data||!data.length){box.textContent='Hələ şagird yoxdur.';return}
-  box.innerHTML='';
-  data.forEach((s,i)=>{
-   const div=document.createElement('div');div.className='item';
-   div.textContent=(i+1)+'. '+(s.full_name||s.student_name||s.name||'Şagird')+' · Kod: '+(s.student_code||s.access_code||s.code||'—');
-   box.appendChild(div);
-  });
- }catch(e){box.textContent='Şagirdlər yüklənmədi: '+(e.message||String(e))}
-}
+
+async function createStudent(){
+ const name = document.getElementById('newStudentName').value.trim();
+ const messageId = 'createStudentMessage';
+ const btn = document.getElementById('addStudentBtn');
+
+ hideMessage(messageId);
+
+ if(!name){
+  showMessage(messageId, 'Şagirdin adını və soyadını yaz.');
+  return;
+ }
+
+ btn.disabled = true;
+ btn.textContent = 'Əlavə edilir...';
+
+ try {
+  const {data, error} = await supabaseClient.rpc(
+   'teacher_create_student',
+   {p_full_name: name}
+  );
+
+  if(error) throw error;
+
+  showMessage(
+   messageId,
+   'Şagird əlavə edildi! Giriş kodunu şagird siyahısında yoxla.'
+  );
+
+  document.getElementById('newStudentName').value = '';
+
+  await loadTeacherStudents();
+
+ } catch(e) {
+  showMessage(
+   messageId,
+   'Şagird əlavə edilmədi: ' + (e.message || String(e))
+  );
+ } finally {
+  btn.disabled = false;
+  btn.textContent = '+ Şagird əlavə et';
+ }
+
 
 async function loadTeacherResults(){
  const box=document.getElementById('teacherResults');
