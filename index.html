@@ -829,6 +829,92 @@ async function loadTeacherResults(){
   }
 }
 
+  
+async function loadTeacherResults() {
+  const container = document.getElementById('teacherResults');
+
+  if (!container) {
+    console.error('teacherResults elementi tapılmadı.');
+    return;
+  }
+
+  container.innerHTML = '<p>Nəticələr yüklənir...</p>';
+
+  try {
+    const { data: results, error } = await supabaseClient
+      .from('es_test_results')
+      .select('id, student_id, test_title, score, total_questions, percentage, total, created_at')
+      .order('created_at', { ascending: false });
+
+    if (error) throw error;
+
+    if (!results || results.length === 0) {
+      container.innerHTML = '<p>Hələ heç bir nəticə yoxdur.</p>';
+      return;
+    }
+
+    const studentIds = [
+      ...new Set(results.map(r => r.student_id).filter(Boolean))
+    ];
+
+    let students = [];
+
+    if (studentIds.length > 0) {
+      const { data, error: studentError } = await supabaseClient
+        .from('es_students')
+        .select('id, full_name')
+        .in('id', studentIds);
+
+      if (studentError) throw studentError;
+      students = data || [];
+    }
+
+    const studentNames = {};
+    students.forEach(student => {
+      studentNames[student.id] = student.full_name;
+    });
+
+    const safe = value => String(value ?? '').replace(/[&<>"']/g, ch => ({
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#39;'
+    })[ch]);
+
+    container.innerHTML = results.map(result => {
+      const name = studentNames[result.student_id] || 'Naməlum şagird';
+      const date = result.created_at
+        ? new Date(result.created_at).toLocaleString('az-AZ')
+        : '—';
+      const percent = Number(result.percentage ?? 0);
+
+      return `
+        <div class="card" style="margin:12px 0;padding:14px;">
+          <h4>${safe(name)}</h4>
+          <p><strong>Sınaq:</strong> ${safe(result.test_title || 'Adsız test')}</p>
+          <p><strong>Bal:</strong> ${safe(result.score)} / ${safe(result.total_questions)}</p>
+          <p><strong>Nəticə:</strong> ${safe(percent.toFixed(2))}%</p>
+          <p><strong>Tarix:</strong> ${safe(date)}</p>
+        </div>
+      `;
+    }).join('');
+
+  } catch (error) {
+    console.error('Nəticələri yükləmə xətası:', error);
+    container.innerHTML =
+      '<p>Nəticələri yükləmək mümkün olmadı: ' +
+      String(error.message || error).replace(/[&<>"']/g, ch => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;'
+      })[ch]) +
+      '</p>';
+  }
+}
+
 
 
 function exportTeacherResults(){
