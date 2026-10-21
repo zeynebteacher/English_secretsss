@@ -650,6 +650,33 @@ async function loadStudentResults(){
   if(!ce&&custom&&custom.length){custom.forEach(row=>{const div=document.createElement('div');div.className='item';div.textContent=(row.test_title||'Onlayn sınaq')+' — '+(row.percentage??0)+'%';box.appendChild(div)})}
  }catch(e){console.warn('Custom results are not available until student_custom_test_results RPC is created.')}
 }
+  
+async function refreshTeacherStudents(){
+  const btn = document.getElementById('refreshStudentsBtn');
+  if(btn) btn.disabled = true;
+
+  try {
+    await loadTeacherStudents();
+  } catch(error) {
+    console.error('Şagird siyahısını yeniləmə xətası:', error);
+  } finally {
+    if(btn) btn.disabled = false;
+  }
+}
+
+async function refreshTeacherResults(){
+  const btn = document.getElementById('refreshResultsBtn');
+  if(btn) btn.disabled = true;
+
+  try {
+    await loadTeacherResults();
+  } catch(error) {
+    console.error('Nəticələri yeniləmə xətası:', error);
+  } finally {
+    if(btn) btn.disabled = false;
+  }
+}
+
 
 async function loadStudentMaterials(){
  const box=document.getElementById('studentMaterials');box.textContent='Loading...';
