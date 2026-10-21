@@ -492,6 +492,37 @@ async function teacherLogin(){
   await Promise.all([loadTeacherMaterials(),loadPracticeTestStatus(),loadTeacherStudents(),loadTeacherResults(),loadCustomTeacherTests(),loadMonthlyRanking()]);
  }catch(e){showMessage('loginMessage','Teacher login error: '+(e.message||String(e)))}
 }
+  async function loadTeacherStudents(){
+  const list = document.getElementById('teacherStudentsList');
+  if(!list) return;
+
+  list.innerHTML = '<p>Şagirdlər yüklənir...</p>';
+
+  try {
+    const { data, error } = await supabaseClient
+      .from('students')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if(error) throw error;
+
+    if(!data || data.length === 0){
+      list.innerHTML = '<p>Hələ şagird əlavə edilməyib.</p>';
+      return;
+    }
+
+    list.innerHTML = data.map(student => `
+      <div class="card">
+        <strong>${student.full_name || student.name || 'Şagird'}</strong>
+        <p>Giriş kodu: ${student.access_code || student.code || '—'}</p>
+      </div>
+    `).join('');
+
+  } catch(error) {
+    list.innerHTML = '<p>Şagirdləri yükləmək mümkün olmadı: ' +
+      (error.message || String(error)) + '</p>';
+  }
+  }
 
 async function logout(){try{await supabaseClient.auth.signOut()}catch(e){}currentStudent=null;currentToken=null;lastTestSubmitted=false;showOnly('loginSection')}
   
