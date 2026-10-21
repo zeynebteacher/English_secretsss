@@ -634,7 +634,6 @@ async function createStudent(){
   );
 
   document.getElementById('newStudentName').value = '';
-
   await loadTeacherStudents();
 
  } catch(e) {
@@ -646,24 +645,9 @@ async function createStudent(){
   btn.disabled = false;
   btn.textContent = '+ Şagird əlavə et';
  }
-
-
-async function loadTeacherResults(){
- const box=document.getElementById('teacherResults');
- box.textContent='Nəticələr yüklənir...';
- try{
-  const {data,error}=await supabaseClient.rpc('teacher_get_results');
-  if(error)throw error;
-  teacherResultsCache=data||[];
-  if(!teacherResultsCache.length){box.textContent='Hələ nəticə yoxdur.';return}
-  box.innerHTML='';
-  teacherResultsCache.forEach(r=>{
-   const div=document.createElement('div');div.className='item';
-   div.textContent=(r.student_name||r.full_name||'Şagird')+' — '+(r.test_title||r.title||'Sınaq')+' — '+(r.percentage??r.score??'')+(r.percentage!==undefined?'%':'');
-   box.appendChild(div);
-  });
- }catch(e){box.textContent='Nəticələr yüklənmədi: '+(e.message||String(e))}
 }
+
+
 
 function exportTeacherResults(){
  if(!teacherResultsCache.length){showMessage('teacherResultsMessage','İxrac üçün nəticə yoxdur.');return}
