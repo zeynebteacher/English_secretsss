@@ -145,72 +145,75 @@ function answerFor(n){const r=document.querySelector('input[name="q'+n+'"]:check
 
   return html;
 }
-async function submitTest(ev){ev.preventDefault();if(lastTestSubmitted)return;await loadActivePracticeTest();if(!activePracticeTest){showMessage('testMessage','This test is not active now. Please return to your cabinet.');return}const r=scoreTest(),b=document.getElementById('submitTestBtn');b.disabled=true;showMessage('testMessage','Saving your result...');try{const {error}=await supabaseClient.rpc('student_save_result',{p_token:currentToken,p_test_title:activePracticeTest.title||TEST_TITLE,p_score:r.correct,p_total_questions:30,p_percentage:r.percentage});if(error)throw error;lastTestSubmitted=true;document.getElementById('testResult').innerHTML= document.getElementById('testResult').innerHTML =
-let reviewHTML = '<h3>🔎 Bütün sualların yoxlanması</h3>';
 
-qs.forEach((q, i) => {
-  const selected = document.querySelector(
-    'input[name="custom_' + i + '"]:checked'
-  );
+async function submitTest(ev) {
+  ev.preventDefault();
 
-  const chosen = selected ? selected.value : '';
-  const right = String(q.correct || '').toUpperCase();
-  const ok = chosen.toUpperCase() === right && chosen !== '';
+  if (lastTestSubmitted) return;
 
-  const correctOption = (q.options || []).find(
-    o => String(o.key).toUpperCase() === right
-  );
+  const b = document.getElementById('submitTestBtn');
+  const resultBox = document.getElementById('testResult');
 
-  reviewHTML += `
-    <div class="review-card ${ok ? 'correct' : 'wrong'}">
-      <p><strong>${i + 1}. ${esc(q.question)}</strong></p>
-      <p class="${ok ? 'review-good' : 'review-bad'}">
-        ${ok ? '✓ Düzgün cavab' : '✗ Səhv cavab'}
-      </p>
-      <p>Sənin cavabın:
-        <strong>${esc(chosen || 'Cavab verilməyib')}</strong>
-      </p>
-      <p class="review-good">
-        Düzgün cavab:
-        ${esc(correctOption
-          ? correctOption.key + ') ' + correctOption.text
-          : right)}
-      </p>
-      ${(q.options || []).map(o => {
-        const isRight =
-          String(o.key).toUpperCase() === right;
-        const isChosen =
-          String(o.key).toUpperCase() === chosen.toUpperCase();
+  b.disabled = true;
+  hideMessage('testMessage');
 
-        const cls = isRight
-          ? 'correct-answer'
-          : (isChosen ? 'wrong-answer' : '');
+  try {
+    await loadActivePracticeTest();
 
-        return `
-          <div class="review-option ${cls}">
-            ${esc(o.key + ') ' + o.text)}
-            ${isRight ? ' ✓ Düzgün cavab' : ''}
-            ${isChosen && !ok ? ' ✗ Sənin seçimin' : ''}
-          </div>
-        `;
-      }).join('')}
-    </div>
-  `;
-});
+    if (!activePracticeTest) {
+      showMessage(
+        'testMessage',
+        'Bu sınaq hazırda aktiv deyil. Şagird kabinetinə qayıt.'
+      );
+      b.disabled = false;
+      return;
+    }
 
-r.innerHTML =
-  '<h3>Nəticən: ' + pct + '%</h3>' +
-  '<p>' + earned + ' / ' + total + ' bal</p>' +
-  '<p>' + (pct >= 90
-    ? '🎉 Təbriklər! Möhtəşəm nəticə! 🎉'
-    : 'Sınağı tamamladın. Davam et!') + '</p>' +
-  reviewHTML +
-  '<button onclick="backToCabinet()">Kabinetə qayıt</button>';  '<h2>Test nəticən</h2>' +
-  '<p class="score">' + r.percentage + ' / 100</p>' +
-  '<p>' + r.correct + ' / 30 düzgün cavab</p>' +
-  '<p class="muted">Nəticən yadda saxlanıldı.</p>' +
-  renderDefaultReview() +
-  '<button onclick="backToCabinet()">Kabinetə qayıt</button>';'<h2>Your result</h2><p class="score">'+r.percentage+' / 100</p><p>You answered <strong>'+r.correct+' out of 30</strong> questions correctly.</p><p class="muted">Your result has been submitted.</p><button onclick="backToCabinet()">Return to cabinet</button>';document.getElementById('testResult').classList.remove('hidden');hideMessage('testMessage');await loadStudentResults()}catch(e){showMessage('testMessage','Nəticə hesablandı, amma yadda saxlanmadı: '+(e.message||e));b.disabled=false}}
+    const r = scoreTest();
+
+    showMessage('testMessage', 'Nəticə yadda saxlanılır...');
+
+    const { error } = await supabaseClient.rpc(
+      'student_save_result',
+      {
+        p_token: currentToken,
+        p_test_title: activePracticeTest.title || TEST_TITLE,
+        p_score: r.correct,
+        p_total_questions: 30,
+        p_percentage: r.percentage
+      }
+    );
+
+    if (error) throw error;
+
+    lastTestSubmitted = true;
+
+    resultBox.innerHTML =
+      '<h2>Test nəticən</h2>' +
+      '<p class="score">' + r.percentage + ' / 100</p>' +
+      '<p>' + r.correct + ' / 30 düzgün cavab</p>' +
+      '<p class="muted">Nəticən yadda saxlanıldı.</p>' +
+      renderDefaultReview() +
+      '<button onclick="backToCabinet()">Kabinetə qayıt</button>';
+
+    resultBox.classList.remove('hidden');
+    hideMessage('testMessage');
+
+    if (r.percentage >= 90) {
+      launchConfetti();
+    }
+
+    await loadStudentResults();
+
+  } catch (e) {
+    showMessage(
+      'testMessage',
+      'Nəticə yadda saxlanmadı: ' + (e.message || e)
+    );
+    b.disabled = false;
+  }
+}
+
 async function loadStudentResults(){const box=document.getElementById('studentResults');box.textContent='Loading...';box.innerHTML='';try{const {data,error}=await supabaseClient.rpc('student_get_results',{p_token:currentToken});if(error)throw error;if(data?.length)data.forEach(r=>{const d=document.createElement('div');d.className='item';d.textContent=(r.test_title||r.title||'Test')+' — '+(r.percentage??r.p_percentage??r.score??'')+(r.percentage!==undefined?'%':'');box.appendChild(d)})}catch(e){box.textContent='Could not load results: '+(e.message||e)}try{const {data,error}=await supabaseClient.rpc('student_custom_test_results',{p_token:currentToken});if(!error&&data?.length)data.forEach(r=>{const d=document.createElement('div');d.className='item';d.textContent=(r.test_title||'Onlayn sınaq')+' — '+(r.percentage??0)+'%';box.appendChild(d)})}catch(e){}if(!box.children.length)box.textContent='No saved results yet.'}
 async function loadStudentMaterials(){const box=document.getElementById('studentMaterials');box.textContent='Loading...';try{const {data,error}=await supabaseClient.from('english_materials').select('created_at,Title,Content,Grade,Topic').order('created_at',{ascending:false});if(error)throw error;if(!data?.length){box.textContent='No materials available yet.';return}box.innerHTML='';data.forEach(m=>{const d=document.createElement('div');d.className='item';d.innerHTML='<strong>'+esc(m.Title||'Material')+'</strong><div class="small">Grade '+esc(m.Grade||'—')+' · '+esc(m.Topic||'')+'</div>'+(m.Content?'<a target="_blank" rel="noopener noreferrer" href="'+esc(m.Content)+'">Open material</a>':'');box.appendChild(d)})}catch(e){box.textContent='Could not load materials: '+(e.message||e)}}
 async function loadTeacherResults(){const box=document.getElementById('teacherResults');box.textContent='Nəticələr yüklənir...';try{const {data,error}=await supabaseClient.from('es_test_results').select('id,student_id,test_title,score,total_questions,percentage,total,created_at').order('created_at',{ascending:false});if(error)throw error;let students=[];const sr=await supabaseClient.from('es_students').select('id,full_name');if(!sr.error)students=sr.data||[];const names={};students.forEach(s=>{names[String(s.id)]=s.full_name||'Şagird'});teacherResultsCache=(data||[]).map(r=>({...r,student_name:names[String(r.student_id)]||'Şagird'}));if(!teacherResultsCache.length){box.textContent='Hələ heç bir nəticə yoxdur.';return}box.innerHTML=teacherResultsCache.map(r=>`<div class="item"><strong>${esc(r.student_name)}</strong><p>Sınaq: ${esc(r.test_title||'Adsız test')}</p><p>Bal: ${esc(r.score??0)} / ${esc(r.total_questions??r.total??100)}</p><p>Nəticə: ${esc(Number(r.percentage??0).toFixed(2))}%</p><p>Tarix: ${esc(r.created_at?new Date(r.created_at).toLocaleString('az-AZ'):'—')}</p></div>`).join('')}catch(e){box.textContent='Nəticələr yüklənmədi: '+(e.message||e)}}
