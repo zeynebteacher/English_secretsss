@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+l<!DOCTYPE html>
 <html lang="az">
 <head>
 <meta charset="UTF-8">
@@ -828,12 +828,6 @@ async function createStudent() {
   }
 async function loadTeacherStudents() {
   const box = document.getElementById('teacherStudents');
-
-  if (!box) {
-    console.error('teacherStudents elementi tapılmadı.');
-    return;
-  }
-
   box.textContent = 'Şagirdlər yüklənir...';
 
   try {
@@ -841,9 +835,7 @@ async function loadTeacherStudents() {
       .from('es_students')
       .select('*');
 
-    if (error) {
-      throw error;
-    }
+    if (error) throw error;
 
     box.innerHTML = '';
 
@@ -852,7 +844,7 @@ async function loadTeacherStudents() {
       return;
     }
 
-    data.forEach(function(student) {
+    data.forEach(student => {
       const item = document.createElement('div');
       item.className = 'item';
 
@@ -861,8 +853,7 @@ async function loadTeacherStudents() {
         student.full_name ||
         student.name ||
         student.fullname ||
-        student.first_name ||
-        'Şagirdin adı tapılmadı';
+        'Ad sütunu tapılmadı';
 
       const code =
         student.student_code ||
@@ -886,9 +877,7 @@ async function loadTeacherStudents() {
 
   } catch (error) {
     console.error('Şagird siyahısı xətası:', error);
-    box.textContent =
-      'Şagird siyahısı yüklənmədi: ' +
-      (error.message || 'Naməlum xəta');
+    box.textContent = 'Şagird siyahısı yüklənmədi: ' + error.message;
   }
 }
 async function loadTeacherResults() {
