@@ -826,48 +826,60 @@ async function createStudent() {
   } finally {
     button.disabled = false;
   }
-}
-
 async function loadTeacherStudents() {
-  const box = $('teacherStudents');
+  const box = document.getElementById('teacherStudents');
   box.textContent = 'Şagirdlər yüklənir...';
 
   try {
     const { data, error } = await supabaseClient
       .from('es_students')
-      .select('*')
-      .order('created_at', { ascending: false });
+      .select('*');
 
     if (error) throw error;
 
     box.innerHTML = '';
 
-    (data || []).forEach(student => {
+    if (!data || data.length === 0) {
+      box.textContent = 'Hələ şagird əlavə edilməyib.';
+      return;
+    }
+
+    data.forEach(student => {
       const item = document.createElement('div');
       item.className = 'item';
 
-      const name = document.createElement('strong');
-      name.textContent =
-        student.student_name || student.full_name || student.name || 'Şagird';
-      item.appendChild(name);
+      const name =
+        student.student_name ||
+        student.full_name ||
+        student.name ||
+        student.fullname ||
+        'Ad sütunu tapılmadı';
 
-      const code = document.createElement('p');
-      code.textContent = 'Giriş kodu: ' +
-        (student.access_code || student.student_code || student.code || 'Kod sahəsi tapılmadı');
-      item.appendChild(code);
+      const code =
+        student.student_code ||
+        student.access_code ||
+        student.code ||
+        student.login_code ||
+        '';
+
+      const title = document.createElement('strong');
+      title.textContent = name;
+      item.appendChild(title);
+
+      if (code) {
+        const codeText = document.createElement('p');
+        codeText.textContent = 'Giriş kodu: ' + code;
+        item.appendChild(codeText);
+      }
 
       box.appendChild(item);
     });
 
-    if (!box.children.length) {
-      box.textContent = 'Şagird tapılmadı.';
-    }
   } catch (error) {
-    console.error('Teacher students error:', error);
+    console.error('Şagird siyahısı xətası:', error);
     box.textContent = 'Şagird siyahısı yüklənmədi: ' + error.message;
   }
-}
-
+        }
 async function loadTeacherResults() {
   const box = $('teacherResults');
   box.textContent = 'Nəticələr yüklənir...';
