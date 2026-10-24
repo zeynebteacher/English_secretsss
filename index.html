@@ -828,6 +828,12 @@ async function createStudent() {
   }
 async function loadTeacherStudents() {
   const box = document.getElementById('teacherStudents');
+
+  if (!box) {
+    console.error('teacherStudents elementi tapılmadı.');
+    return;
+  }
+
   box.textContent = 'Şagirdlər yüklənir...';
 
   try {
@@ -835,7 +841,9 @@ async function loadTeacherStudents() {
       .from('es_students')
       .select('*');
 
-    if (error) throw error;
+    if (error) {
+      throw error;
+    }
 
     box.innerHTML = '';
 
@@ -844,7 +852,7 @@ async function loadTeacherStudents() {
       return;
     }
 
-    data.forEach(student => {
+    data.forEach(function(student) {
       const item = document.createElement('div');
       item.className = 'item';
 
@@ -853,7 +861,8 @@ async function loadTeacherStudents() {
         student.full_name ||
         student.name ||
         student.fullname ||
-        'Ad sütunu tapılmadı';
+        student.first_name ||
+        'Şagirdin adı tapılmadı';
 
       const code =
         student.student_code ||
@@ -877,9 +886,11 @@ async function loadTeacherStudents() {
 
   } catch (error) {
     console.error('Şagird siyahısı xətası:', error);
-    box.textContent = 'Şagird siyahısı yüklənmədi: ' + error.message;
+    box.textContent =
+      'Şagird siyahısı yüklənmədi: ' +
+      (error.message || 'Naməlum xəta');
   }
-        }
+}
 async function loadTeacherResults() {
   const box = $('teacherResults');
   box.textContent = 'Nəticələr yüklənir...';
