@@ -527,72 +527,50 @@ Function getStudentName(d){
 Function getStudentToken(d){
   İf(Array.isArray(d))d=d[0];
   Return d?.token||d?.session_token||d?.p_token||d?.access_token||’’;
-}
-Async function studentLogin(){
-  hideMessage(‘studentLoginMessage’);
-  const code=document.getElementById(‘studentCode’).value.trim();
-  if(!code){
-    showMessage(‘studentLoginMessage’,’Giriş kodunu yaz.’);
+
+async function studentLogin() {
+  hideMessage('studentLoginMessage');
+
+  const code = document.getElementById('studentCode').value.trim();
+
+  if (!code) {
+    showMessage('studentLoginMessage', 'Giriş kodunu yaz.');
     return;
   }
 
-  Try{
-    Const {data,error}=await supabaseClient.rpc(‘student_login’,{p_code:code});
-    İf(error)throw error;
+  try {
+    const { data, error } = await supabaseClient.rpc('student_login', {
+      p_code: code
+    });
 
-    Const d=Array.isArray(data)?data[0]:data;
-    İf(!d||d.success===false||d.error){
-      showMessage(‘studentLoginMessage’,’Kod tapılmadı. Müəllimlə əlaqə saxla.’);
+    if (error) throw error;
+
+    const d = Array.isArray(data) ? data[0] : data;
+
+    if (!d || d.success === false || d.error) {
+      showMessage('studentLoginMessage', 'Kod tapılmadı. Müəllimlə əlaqə saxla.');
       return;
     }
 
-    currentStudent=d;
-    currentToken=getStudentToken(d);
+    currentStudent = d;
+    currentToken = getStudentToken(d);
 
-    if(!getStudentName(d)){
-      showMessage(‘studentLoginMessage’,’Şagird məlumatları tapılmadı. Giriş kodunu yoxla.’);
+    if (!getStudentName(d)) {
+      showMessage('studentLoginMessage', 'Şagird məlumatları tapılmadı. Giriş kodunu yoxla.');
       return;
     }
 
-    Document.getElementById(‘studentWelcome’).textContent=
-      ‘Xoş gəldin, ‘+getStudentName(d)+’!’;
+    document.getElementById('studentWelcome').textContent =
+      'Xoş gəldin, ' + getStudentName(d) + '!';
 
-    showOnly(‘studentSection’);
+    showOnly('studentSection');
     loadStudentResults();
     loadStudentMaterials();
     loadCustomStudentTests();
     loadActivePracticeTest();
-  }catch(e){
-    showMessage(‘studentLoginMessage’,’Giriş xətası: ‘+e.message);
-  }
-}
 
-Async function teacherLogin(){
-  hideMessage(‘teacherLoginMessage’);
-
-  const email=document.getElementById(‘teacherEmail’).value.trim();
-  const password=document.getElementById(‘teacherPassword’).value;
-
-  if(email.toLowerCase()!==’zeynebnaghizade@gmail.com’){
-    showMessage(‘teacherLoginMessage’,’Bu email müəllim girişi üçün icazəli deyil.’);
-    return;
-  }
-
-  Try{
-    Const {data,error}=await supabaseClient.auth.signInWithPassword({
-      Email,password
-    });
-    İf(error)throw error;
-
-    showOnly(‘teacherSection’);
-    loadTeacherStudents();
-    loadTeacherResults();
-    loadCustomTeacherTests();
-    loadPracticeTestStatus();
-    loadTeacherMaterials();
-    loadMonthlyRanking();
-  }catch(e){
-    showMessage(‘teacherLoginMessage’,’Giriş alınmadı: ‘+e.message);
+  } catch (e) {
+    showMessage('studentLoginMessage', 'Giriş xətası: ' + e.message);
   }
 }
 
